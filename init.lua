@@ -1,6 +1,6 @@
   
 --vim.lsp.set_log_level("debug")
-require('paths')
+--require('paths')
 
 -- load lua/plugins.lua
 require('plugins')

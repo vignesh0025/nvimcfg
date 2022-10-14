@@ -62,11 +62,13 @@ return require('packer').startup(function(use)
 			{"nvim-lua/plenary.nvim"},
 			{ "vignesh0025/telescope-file-browser.nvim" },
 			{'nvim-telescope/telescope-ui-select.nvim'},
-			{'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+			{'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+			{ "nvim-telescope/telescope-live-grep-args.nvim" },
 		},
 		config = function()
 			require('telescope').setup{
 				defaults = {
+					winblend = 20,
 					path_display = function(opts, path)
 						local tutils = require("telescope.utils")
 						local tail = tutils.path_tail(path)
@@ -89,12 +91,8 @@ return require('packer').startup(function(use)
 			require("telescope").load_extension("ui-select")
 			require("telescope").load_extension("file_browser")
 			require('telescope').load_extension('fzf')
-			local bufopts = { noremap=true, silent=true}
-			local builtin = require('telescope.builtin')
-			vim.keymap.set("n", "<leader>ev", function()
-				builtin.fd{cwd="~/.config/nvim/"}
-			end,
-			bufopts)
+			require("telescope").load_extension("live_grep_args")
+			require('keymaps').telescope_keymaps()
 		end
 	}
 
@@ -238,28 +236,6 @@ return require('packer').startup(function(use)
 			vim.g.neoformat_enabled_c = {'clangformat'}
 		end
 	}
-
-	use {"akinsho/toggleterm.nvim", tag = '*', config = function()
-		require("toggleterm").setup({
-			open_mapping = [[<m-t>]],
-		})
-
-		local t_callback = function()
-			opts = {buffer = 0}
-			vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
-			vim.keymap.set('t', 'jk', [[<C-\><C-n>]], opts)
-			vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
-			vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
-			vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
-			vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
-			print("Then")
-		end
-
-		vim.api.nvim_create_autocmd({"TermOpen"}, {
-			pattern = {"term://*"},
-			callback = t_callback
-		})
-	end}
 
 	use { "chrisbra/csv.vim", ft = { "csv" } }
 

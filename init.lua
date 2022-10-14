@@ -1,6 +1,5 @@
-  
 --vim.lsp.set_log_level("debug")
---require('paths')
+pcall(require, 'paths')
 
 -- load lua/plugins.lua
 require('plugins')
@@ -18,17 +17,6 @@ vim.o.softtabstop=4
 
 vim.g.mapleader=","
 vim.g.maplocalleader=[[\<space>]]
-
-local builtin = require('telescope.builtin')
-
-vim.keymap.set('n', '<c-p>h', builtin.help_tags, {})
-vim.keymap.set('n', '<c-Bslash>', builtin.live_grep, {})
-vim.keymap.set('n', '<c-p><c-p>', function() builtin.find_files{follow=true} end, {})
-vim.keymap.set('n', '<c-p>r', builtin.oldfiles, {})
-vim.keymap.set('n', '<c-p>b', builtin.buffers, {})
-vim.keymap.set('n', '<c-p>o', builtin.lsp_document_symbols, {})
-vim.keymap.set('n', '<c-p>d', function() builtin.diagnostics{bufnr=0} end, {})
-
 
 local testsuite_group = vim.api.nvim_create_augroup("TestSuiteGroup", {
 	clear = false

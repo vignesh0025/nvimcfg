@@ -60,8 +60,9 @@ return require('packer').startup(function(use)
 		branch = "0.1.x",
 		requires = {
 			{"nvim-lua/plenary.nvim"},
-			{ "nvim-telescope/telescope-file-browser.nvim" },
-			{'nvim-telescope/telescope-ui-select.nvim'}
+			{ "vignesh0025/telescope-file-browser.nvim" },
+			{'nvim-telescope/telescope-ui-select.nvim'},
+			{'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 		},
 		config = function()
 			require('telescope').setup{
@@ -87,6 +88,7 @@ return require('packer').startup(function(use)
 			}
 			require("telescope").load_extension("ui-select")
 			require("telescope").load_extension("file_browser")
+			require('telescope').load_extension('fzf')
 			local bufopts = { noremap=true, silent=true}
 			local builtin = require('telescope.builtin')
 			vim.keymap.set("n", "<leader>ev", function()
@@ -127,7 +129,7 @@ return require('packer').startup(function(use)
 	  'nvim-lualine/lualine.nvim',
 	  requires = { 'kyazdani42/nvim-web-devicons', opt = true },
 	  config = function()
-		require('lualine').setup()
+		require('lualine').setup{}
 	  end
 	}
 

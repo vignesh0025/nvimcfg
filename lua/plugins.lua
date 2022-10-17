@@ -6,7 +6,8 @@ vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-vim.g.on_attach = function(client, bufnr)
+-- function(client, bufnr)
+vim.g.on_attach = function(_, bufnr)
 
 	local builtin = require('telescope.builtin')
 
@@ -55,12 +56,14 @@ return require('packer').startup(function(use)
 		end
 	}
 
+
 	use {
 		"nvim-telescope/telescope.nvim",
 		branch = "0.1.x",
 		requires = {
 			{"nvim-lua/plenary.nvim"},
 			{ "vignesh0025/telescope-file-browser.nvim" },
+			-- { "nvim-telescope/telescope-file-browser.nvim" },
 			{'nvim-telescope/telescope-ui-select.nvim'},
 			{'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
 			{ "nvim-telescope/telescope-live-grep-args.nvim" },
@@ -70,6 +73,7 @@ return require('packer').startup(function(use)
 				defaults = {
 					winblend = 20,
 					path_display = function(opts, path)
+						print("vd path_display: "..vim.inspect(opts))
 						local tutils = require("telescope.utils")
 						local tail = tutils.path_tail(path)
 						local head = vim.fn.fnamemodify(path, ":~:h")
@@ -85,6 +89,9 @@ return require('packer').startup(function(use)
 				extensions = {
 					["ui-select"] = {
 						require("telescope.themes").get_dropdown {}
+					},
+					["file_browser"] = {
+						depth = 4
 					}
 				}
 			}
@@ -121,7 +128,12 @@ return require('packer').startup(function(use)
 		end
 	}
 
-	use "ms-jpq/coq_nvim"
+	use {"ms-jpq/coq_nvim",
+		disable = false,
+		setup = function()
+			vim.g.coq_settings = {["auto_start"] = "shut-up"}
+		end
+	}
 
 	use {
 	  'nvim-lualine/lualine.nvim',
@@ -189,9 +201,12 @@ return require('packer').startup(function(use)
 	use {
 		"neovim/nvim-lspconfig",
 		config = function()
-			local coq = require "coq"
-			require'lspconfig'.pyright.setup(coq.lsp_ensure_capabilities({on_attach = vim.g.on_attach}))
-			require'lspconfig'.clangd.setup(coq.lsp_ensure_capabilities({on_attach = vim.g.on_attach}))
+			local ret,coq = pcall(require, "coq")
+
+			local setup_config = ret and coq.lsp_ensure_capabilities({on_attach = vim.g.on_attach}) or {on_attach = vim.g.on_attach}
+
+			require'lspconfig'.pyright.setup(setup_config)
+			require'lspconfig'.clangd.setup(setup_config)
 			require'lspconfig'.sumneko_lua.setup({
 				on_attach = vim.g.on_attach,
 				settings = { Lua = {
@@ -201,13 +216,7 @@ return require('packer').startup(function(use)
 					telemetry = { enable = false, },
 				}, },
 			})
-		end,
-		setup = function()
-			vim.g.coq_settings = {["auto_start"] = "shut-up"}
-			-- vim.g.coq_settings["auto_start"] = "shut-up"
-		end,
-		requires = { {"ms-jpq/coq_nvim"} }
-	}
+		end	}
 
 	use {
 		"nvim-neorg/neorg",

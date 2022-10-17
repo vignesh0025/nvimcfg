@@ -18,9 +18,8 @@ vim.o.softtabstop=4
 vim.g.mapleader=","
 vim.g.maplocalleader=[[\<space>]]
 
-local testsuite_group = vim.api.nvim_create_augroup("TestSuiteGroup", {
-	clear = false
-})
+-- Clears the group if present
+local testsuite_group = vim.api.nvim_create_augroup("TestSuiteGroup", {})
 
 vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
 	pattern = {"*.test_suite", "*.testsuite"},

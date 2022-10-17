@@ -41,6 +41,10 @@ return require('packer').startup(function(use)
 	-- Packer can manage itself
 	use "wbthomason/packer.nvim"
 
+	use 'wellle/targets.vim' -- Nice Plugin to add more selection
+
+	use 'tpope/vim-unimpaired'
+
 	use { "ellisonleao/gruvbox.nvim",
 		disable = true,
 		config = function()
@@ -73,7 +77,6 @@ return require('packer').startup(function(use)
 				defaults = {
 					winblend = 20,
 					path_display = function(opts, path)
-						print("vd path_display: "..vim.inspect(opts))
 						local tutils = require("telescope.utils")
 						local tail = tutils.path_tail(path)
 						local head = vim.fn.fnamemodify(path, ":~:h")
@@ -99,7 +102,7 @@ return require('packer').startup(function(use)
 			require("telescope").load_extension("file_browser")
 			require('telescope').load_extension('fzf')
 			require("telescope").load_extension("live_grep_args")
-			require('keymaps').telescope_keymaps()
+			require('vd.keymaps').telescope_keymaps()
 		end
 	}
 
@@ -136,11 +139,15 @@ return require('packer').startup(function(use)
 	}
 
 	use {
-	  'nvim-lualine/lualine.nvim',
-	  requires = { 'kyazdani42/nvim-web-devicons', opt = true },
-	  config = function()
-		require('lualine').setup{}
-	  end
+		'nvim-lualine/lualine.nvim',
+		requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+		config = function()
+			require('lualine').setup{
+				options =  {
+					globalstatus = true
+				}
+			}
+		end
 	}
 
 	use {

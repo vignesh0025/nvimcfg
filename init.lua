@@ -1,8 +1,15 @@
 --vim.lsp.set_log_level("debug")
 pcall(require, 'paths')
 
+local ok, ret = pcall(require, 'plenary.reload')
+if not ok then
+    print("Planery Not Available"..ret)
+else
+    ret.reload_module("vd.", true)
+end
+
 -- load lua/plugins.lua
-require('plugins')
+require('vd.plugins')
 
 vim.o.number = true
 vim.o.signcolumn = "yes" -- always have signcolumn so text doesn't move right

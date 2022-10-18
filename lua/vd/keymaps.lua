@@ -7,6 +7,7 @@ local telescope_keymaps = function()
 	vim.keymap.set('n', '<c-p>r', builtin.oldfiles, {})
 	vim.keymap.set('n', '<c-p>b', builtin.buffers, {})
 	vim.keymap.set('n', '<c-p>o', builtin.lsp_document_symbols, {})
+	vim.keymap.set('n', '<c-p>g', builtin.grep_string, {})
 	vim.keymap.set('n', '<c-p>d', function() builtin.diagnostics{bufnr=0} end, {})
 
 	local bufopts = { noremap=true, silent=true}

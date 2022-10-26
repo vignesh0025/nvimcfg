@@ -55,11 +55,34 @@ return require('packer').startup(function(use)
 
 	use {'navarasu/onedark.nvim',
 		config = function()
-			require('onedark').setup({ style = 'darker' })
-			require('onedark').load()
+			-- require('onedark').setup({ style = 'darker' })
+			-- require('onedark').load()
 		end
 	}
 
+	use { "folke/tokyonight.nvim",
+		config = function()
+			require("tokyonight").setup({
+				style = "storm",
+					theme = 'tokyonight'
+			})
+			vim.cmd[[colorscheme tokyonight]]
+		end
+	}
+
+	use {'kyazdani42/nvim-web-devicons'}
+
+	use {
+		'nvim-lualine/lualine.nvim',
+		requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+		config = function()
+			require('lualine').setup{
+				options =  {
+					globalstatus = true,
+				}
+			}
+		end
+	}
 
 	use {
 		"nvim-telescope/telescope.nvim",
@@ -135,18 +158,6 @@ return require('packer').startup(function(use)
 		disable = false,
 		setup = function()
 			vim.g.coq_settings = {["auto_start"] = "shut-up"}
-		end
-	}
-
-	use {
-		'nvim-lualine/lualine.nvim',
-		requires = { 'kyazdani42/nvim-web-devicons', opt = true },
-		config = function()
-			require('lualine').setup{
-				options =  {
-					globalstatus = true
-				}
-			}
 		end
 	}
 

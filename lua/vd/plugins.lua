@@ -1,40 +1,3 @@
-local opts = { noremap=true, silent=true }
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
-
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
--- function(client, bufnr)
-vim.g.on_attach = function(_, bufnr)
-
-	local builtin = require('telescope.builtin')
-
-	vim.keymap.set('n', '<c-Bslash>', builtin.live_grep, {})
-	-- Enable completion triggered by <c-x><c-o>
-	vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-	-- Mappings.
-	-- See `:help vim.lsp.*` for documentation on any of the below functions
-	local bufopts = { noremap=true, silent=true, buffer=bufnr }
-	vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-	vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-	vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-	vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-	vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-	vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-	vim.keymap.set('n', '<space>wl', function()
-		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-	end, bufopts)
-	vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
-	vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
-	vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
-	-- vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-	vim.keymap.set('n', 'gr', builtin.lsp_references, bufopts)
-	vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
-end
 
 return require('packer').startup(function(use)
 
@@ -53,13 +16,6 @@ return require('packer').startup(function(use)
 		end,
 	}
 
-	use {'navarasu/onedark.nvim',
-		config = function()
-			-- require('onedark').setup({ style = 'darker' })
-			-- require('onedark').load()
-		end
-	}
-
 	use { "folke/tokyonight.nvim",
 		config = function()
 			require("tokyonight").setup({
@@ -74,7 +30,7 @@ return require('packer').startup(function(use)
 
 	use {
 		'nvim-lualine/lualine.nvim',
-		requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+		requires = { 'kyazdani42/nvim-web-devicons'},
 		config = function()
 			require('lualine').setup{
 				options =  {
@@ -154,13 +110,6 @@ return require('packer').startup(function(use)
 		end
 	}
 
-	use {"ms-jpq/coq_nvim",
-		disable = false,
-		setup = function()
-			vim.g.coq_settings = {["auto_start"] = "shut-up"}
-		end
-	}
-
 	use {
 		'kyazdani42/nvim-tree.lua',
 		requires = {
@@ -216,25 +165,18 @@ return require('packer').startup(function(use)
 		end
 	}
 
-	use {
-		"neovim/nvim-lspconfig",
-		config = function()
-			local ret,coq = pcall(require, "coq")
-
-			local setup_config = ret and coq.lsp_ensure_capabilities({on_attach = vim.g.on_attach}) or {on_attach = vim.g.on_attach}
-
-			require'lspconfig'.pyright.setup(setup_config)
-			require'lspconfig'.clangd.setup(setup_config)
-			require'lspconfig'.sumneko_lua.setup({
-				on_attach = vim.g.on_attach,
-				settings = { Lua = {
-					runtime = { version = 'LuaJIT', },
-					diagnostics = { globals = {'vim'}, },
-					workspace = { library = vim.api.nvim_get_runtime_file("", true), },
-					telemetry = { enable = false, },
-				}, },
-			})
-		end	}
+	use { "ms-jpq/coq_nvim", setup = require('vd.lspsetup').setup_coq }
+	use { 'hrsh7th/nvim-cmp', requires = {
+			'hrsh7th/cmp-buffer',
+			'hrsh7th/cmp-path',
+			'hrsh7th/cmp-cmdline',
+			'hrsh7th/cmp-nvim-lsp',
+			'hrsh7th/cmp-vsnip',
+			'hrsh7th/vim-vsnip',
+		},
+		config = require('vd.lspsetup').config_nvimcmp
+	}
+	use { "neovim/nvim-lspconfig", config = require('vd.lspsetup').config_lspconfig }
 
 	use {
 		"nvim-neorg/neorg",

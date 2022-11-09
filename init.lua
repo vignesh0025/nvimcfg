@@ -26,7 +26,7 @@ vim.o.shiftround = true
 
 -- filetype plugin indent on
 
-vim.g.mapleader=","
+vim.g.mapleader=" "
 vim.g.maplocalleader=[[\<space>]]
 
 -- load lua/plugins.lua

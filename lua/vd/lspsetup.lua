@@ -159,6 +159,7 @@ local config_nvimcmp = function ()
 		sources = cmp.config.sources({
 			{ name = 'nvim_lsp' },
 			{ name = 'vsnip' },
+			{ name = "neorg" },
 		}, {
 			{ name = 'buffer' },
 		})
@@ -178,8 +179,19 @@ local setup_coq = function ()
 	-- vim.g.coq_settings = {["auto_start"] = "shut-up"}
 end
 
+local config_null_ls = function ()
+	require("null-ls").setup({
+		debug = true,
+		on_attach = vim.g.on_attach,
+		sources = {
+			require("null-ls").builtins.code_actions.refactoring
+		},
+	})
+end
+
 return {
 	config_lspconfig = config_lspconfig,
 	config_nvimcmp = config_nvimcmp,
-	setup_coq = setup_coq
+	setup_coq = setup_coq,
+	config_null_ls = config_null_ls
 }

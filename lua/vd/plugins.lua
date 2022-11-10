@@ -177,6 +177,10 @@ return require('packer').startup(function(use)
 		config = require('vd.lspsetup').config_nvimcmp
 	}
 	use { "neovim/nvim-lspconfig", config = require('vd.lspsetup').config_lspconfig }
+	use { "jose-elias-alvarez/null-ls.nvim",
+		config = require('vd.lspsetup').config_null_ls,
+		requires = {'ThePrimeagen/refactoring.nvim'}
+	}
 
 	use {
 		"nvim-neorg/neorg",
@@ -184,7 +188,9 @@ return require('packer').startup(function(use)
 		config = function()
 			require('neorg').setup {
 				load = {
-					["core.defaults"] = {}
+					["core.defaults"] = {},
+					["core.norg.concealer"] = {},
+					["core.integrations.nvim-cmp"] = {}
 				}
 			}
 		end,

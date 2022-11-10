@@ -208,4 +208,15 @@ return require('packer').startup(function(use)
 
 	use { "chrisbra/csv.vim", ft = { "csv" } }
 
+	-- SessionLoad
+	-- SessionSave
+	-- SessionStop
+	use {'natecraddock/sessions.nvim', config = function ()
+		require("sessions").setup({
+			session_filepath = "./.session",
+		})
+
+		require("vd.autocmds").au_session()
+	end}
+
 end)

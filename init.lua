@@ -31,5 +31,5 @@ vim.g.maplocalleader=[[\<space>]]
 
 -- load lua/plugins.lua
 require('vd.filetype')
-require('vd.autocmds')
+require('vd.autocmds').setup()
 require('vd.plugins')

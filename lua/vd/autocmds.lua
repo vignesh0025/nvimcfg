@@ -22,6 +22,16 @@ autocmd('BufEnter', {
 	group = ui_group
 })
 
+local yh_group = vim.api.nvim_create_augroup("yank_highlight", {})
+
+autocmd("TextYankPost", {
+	group = yh_group,
+	pattern = '*',
+	callback = function()
+		vim.highlight.on_yank { higroup='IncSearch', timeout=700 }
+	end,
+})
+
 -- vim.api.nvim_create_autocmd('LspAttach', {
 --   desc = 'LSP actions',
 --   callback = function()

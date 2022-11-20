@@ -16,13 +16,18 @@ return require('packer').startup(function(use)
 		end,
 	}
 
+	use { "EdenEast/nightfox.nvim",
+		config = function ()
+			vim.cmd("colorscheme nightfox")
+		end
+	}
 	use { "folke/tokyonight.nvim",
 		config = function()
 			require("tokyonight").setup({
 				style = "storm",
 					theme = 'tokyonight'
 			})
-			vim.cmd[[colorscheme tokyonight]]
+			-- vim.cmd[[colorscheme tokyonight]]
 		end
 	}
 

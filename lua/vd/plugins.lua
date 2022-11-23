@@ -151,7 +151,7 @@ return require('packer').startup(function(use)
 		config = function()
 			require'nvim-treesitter.configs'.setup {
 				-- A list of parser names, or "all"
-				ensure_installed = { "c", "lua", "python" },
+				ensure_installed = { "c", "lua", "python", "cpp" },
 				sync_install = false,
 				highlight = {
 					-- `false` will disable the whole extension
@@ -164,6 +164,22 @@ return require('packer').startup(function(use)
 			}
 		end
 	}
+	use { "nvim-treesitter/nvim-treesitter-textobjects",
+		config = function ()
+		require('nvim-treesitter.configs').setup({
+			textobjects = {
+				select = {
+					enable = true,
+					keymaps = {
+						["af"] = "@function.outer",
+						["if"] = "@function.inner",
+						["ac"] = "@class.outer",
+						["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+					},
+				}
+			}
+		})
+	end }
 
 	use { "ms-jpq/coq_nvim", setup = require('vd.lspsetup').setup_coq }
 	use { 'hrsh7th/nvim-cmp', requires = {
@@ -217,6 +233,33 @@ return require('packer').startup(function(use)
 		})
 
 		require("vd.autocmds").au_session()
+	end}
+
+	use { "aserowy/tmux.nvim", config = function ()
+		require("tmux").setup()
+		-- {
+		-- 	navigation = {
+		-- 		-- cycles to opposite pane while navigating into the border
+		-- 		cycle_navigation = false,
+
+		-- 		-- enables default keybindings (C-hjkl) for normal mode
+		-- 		enable_default_keybindings = false,
+
+		-- 		-- prevents unzoom tmux when navigating beyond vim border
+		-- 		persist_zoom = false,
+		-- 	},
+		-- 	resize = {
+		-- 		-- enables default keybindings (A-hjkl) for normal mode
+		-- 		enable_default_keybindings = false,
+
+		-- 		-- sets resize steps for x axis
+		-- 		resize_step_x = 1,
+
+		-- 		-- sets resize steps for y axis
+		-- 		resize_step_y = 1,
+		-- 	}
+		-- })
+		require("vd.keymaps").tmux_keymaps()
 	end}
 
 end)

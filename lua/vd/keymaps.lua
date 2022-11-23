@@ -20,6 +20,19 @@ local telescope_keymaps = function()
 	vim.keymap.set('n', '<c-Bslash>', extensions.live_grep_args.live_grep_args, {})
 end
 
+local tmux_keymaps = function ()
+	vim.keymap.set('n', '<m-j>', require("tmux").move_bottom, {})
+	vim.keymap.set('n', '<m-h>', require("tmux").move_left, {})
+	vim.keymap.set('n', '<m-k>', require("tmux").move_top, {})
+	vim.keymap.set('n', '<m-l>', require("tmux").move_right, {})
+
+	vim.keymap.set('n', '<m-Down>', require("tmux").move_bottom, {})
+	vim.keymap.set('n', '<m-Left>', require("tmux").move_left, {})
+	vim.keymap.set('n', '<m-Up>', require("tmux").move_top, {})
+	vim.keymap.set('n', '<m-Right>', require("tmux").move_right, {})
+end
+
 return {
-	telescope_keymaps = telescope_keymaps
+	telescope_keymaps = telescope_keymaps,
+	tmux_keymaps = tmux_keymaps
 }

@@ -34,6 +34,12 @@ autocmd("TextYankPost", {
 	end,
 })
 
+autocmd({ 'BufWritePre' }, {
+	desc = 'trim buffer whitespaces',
+	pattern = '*',
+	command = [[%s/\s\+$//e]],
+})
+
 end
 
 -- vim.api.nvim_create_autocmd('LspAttach', {
@@ -41,13 +47,6 @@ end
 --   callback = function()
 -- 	  print("LspStarted")
 --   end
--- })
-
--- autocmd({ 'BufWritePre' }, {
--- 	desc = 'trim buffer whitespaces',
--- 	pattern = '*',
--- 	command = 'TrimTrailingWhitespace',
--- 	group = filetype_group
 -- })
 
 local au_session = function ()

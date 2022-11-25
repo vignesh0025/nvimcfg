@@ -22,6 +22,7 @@ vim.o.smartcase = true
 vim.o.smartindent = true
 vim.o.list = true
 vim.o.shiftround = true
+vim.o.scrolloff = 3
 -- set expandtab
 
 -- filetype plugin indent on

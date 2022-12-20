@@ -24,6 +24,15 @@ autocmd('BufEnter', {
 	group = ui_group
 })
 
+vim.cmd[[match ExtraWhitespace /\s\+\%#\@<!$/]]
+
+autocmd('ColorScheme', {
+	pattern = "*",
+	desc = 'Highlight trailing whitespace wigh ExtraWhiteSpace group',
+	command = 'highlight ExtraWhitespace ctermbg=red guibg=red',
+	group = ui_group
+})
+	
 local yh_group = vim.api.nvim_create_augroup("yank_highlight", {})
 
 autocmd("TextYankPost", {

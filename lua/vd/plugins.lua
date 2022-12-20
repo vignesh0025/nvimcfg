@@ -243,19 +243,12 @@ return require('packer').startup(function(use)
 
 	use {'dstein64/vim-startuptime', disable=true}
 
+	-- TODO: Resize support
 	use { "aserowy/tmux.nvim", config = function ()
-		require("tmux").setup()
-		-- {
-		-- 	navigation = {
-		-- 		-- cycles to opposite pane while navigating into the border
-		-- 		cycle_navigation = false,
-
-		-- 		-- enables default keybindings (C-hjkl) for normal mode
-		-- 		enable_default_keybindings = false,
-
-		-- 		-- prevents unzoom tmux when navigating beyond vim border
-		-- 		persist_zoom = false,
-		-- 	},
+		require("tmux").setup({
+			navigation = {
+				cycle_navigation = false,
+			},
 		-- 	resize = {
 		-- 		-- enables default keybindings (A-hjkl) for normal mode
 		-- 		enable_default_keybindings = false,
@@ -266,7 +259,7 @@ return require('packer').startup(function(use)
 		-- 		-- sets resize steps for y axis
 		-- 		resize_step_y = 1,
 		-- 	}
-		-- })
+		})
 		require("vd.keymaps").tmux_keymaps()
 	end}
 

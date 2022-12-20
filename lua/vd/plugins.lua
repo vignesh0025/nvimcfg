@@ -78,7 +78,7 @@ return require('packer').startup(function(use)
 						require("telescope.themes").get_dropdown {}
 					},
 					["file_browser"] = {
-						depth = 4
+						depth = 1
 					}
 				}
 			}
@@ -170,7 +170,7 @@ return require('packer').startup(function(use)
 		end
 	}
 
-	use { "ms-jpq/coq_nvim", setup = require('vd.lspsetup').setup_coq }
+	use { "ms-jpq/coq_nvim", disable = true, setup = require('vd.lspsetup').setup_coq }
 	use { 'hrsh7th/nvim-cmp', requires = {
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-path',
@@ -205,7 +205,7 @@ return require('packer').startup(function(use)
 	use {
 		"sbdchd/neoformat",
 		setup = function()
-			vim.g.neoformat_cpp_clangformat = { exe =  '/usr/intel/pkgs/clang/11.0.1/bin/clang-format', }
+			vim.g.neoformat_cpp_clangformat = { exe =  'clang-format', }
 			vim.g.neoformat_enabled_cpp = {'clangformat'}
 			vim.g.neoformat_enabled_c = {'clangformat'}
 		end
@@ -223,5 +223,7 @@ return require('packer').startup(function(use)
 
 		require("vd.autocmds").au_session()
 	end}
+
+	use {'dstein64/vim-startuptime', disable=true}
 
 end)

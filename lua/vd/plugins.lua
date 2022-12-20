@@ -1,27 +1,38 @@
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"--single-branch",
+		"https://github.com/folke/lazy.nvim.git",
+		lazypath,
+	})
+end
+vim.opt.runtimepath:prepend(lazypath)
 
-return require('packer').startup(function(use)
+local plugins = {
 
-	-- Packer can manage itself
-	use "wbthomason/packer.nvim"
+	{ "EdenEast/nightfox.nvim",
+		config = function ()
+			vim.cmd("colorscheme terafox")
+		end
+	},
 
-	use 'wellle/targets.vim' -- Nice Plugin to add more selection
+	'wellle/targets.vim', -- Nice Plugin to add more selection
 
-	use 'tpope/vim-unimpaired'
+	'tpope/vim-unimpaired',
 
-	use { "ellisonleao/gruvbox.nvim",
-		disable = true,
+	{ "ellisonleao/gruvbox.nvim",
+		enabled = false,
 		config = function()
 			vim.o.background = "dark"
 			-- vim.cmd([[colorscheme gruvbox]])
 		end,
-	}
+	},
 
-	use { "EdenEast/nightfox.nvim",
-		config = function ()
-			vim.cmd("colorscheme nightfox")
-		end
-	}
-	use { "folke/tokyonight.nvim",
+	 { "folke/tokyonight.nvim",
+		enabled = false,
 		config = function()
 			require("tokyonight").setup({
 				style = "storm",
@@ -29,13 +40,13 @@ return require('packer').startup(function(use)
 			})
 			-- vim.cmd[[colorscheme tokyonight]]
 		end
-	}
+	},
 
-	use {'kyazdani42/nvim-web-devicons'}
+	 -- {'kyazdani42/nvim-web-devicons'}
 
-	use {
+	 {
 		'nvim-lualine/lualine.nvim',
-		requires = { 'kyazdani42/nvim-web-devicons'},
+		dependencies = { 'kyazdani42/nvim-web-devicons'},
 		config = function()
 			require('lualine').setup{
 				options =  {
@@ -43,17 +54,21 @@ return require('packer').startup(function(use)
 				}
 			}
 		end
-	}
+	},
 
-	use {
+	-- you can use the VeryLazy event for things that can
+	-- load later and are not important for the initial UI
+	{ "stevearc/dressing.nvim", event = "VeryLazy" },
+
+	 {
 		"nvim-telescope/telescope.nvim",
 		branch = "0.1.x",
-		requires = {
+		dependencies = {
 			{"nvim-lua/plenary.nvim"},
 			{ "vignesh0025/telescope-file-browser.nvim" },
 			-- { "nvim-telescope/telescope-file-browser.nvim" },
-			{'nvim-telescope/telescope-ui-select.nvim'},
-			{'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+			-- {'nvim-telescope/telescope-ui-select.nvim'},
+			{'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
 			{ "nvim-telescope/telescope-live-grep-args.nvim" },
 		},
 		config = function()
@@ -82,45 +97,45 @@ return require('packer').startup(function(use)
 					}
 				}
 			}
-			require("telescope").load_extension("ui-select")
+			-- require("telescope").load_extension("ui-select")
 			require("telescope").load_extension("file_browser")
 			require('telescope').load_extension('fzf')
 			require("telescope").load_extension("live_grep_args")
 			require('vd.keymaps').telescope_keymaps()
 		end
-	}
+	},
 
-	use "tpope/vim-commentary"
+	 "tpope/vim-commentary",
 
-	use "tpope/vim-surround"
+	 "tpope/vim-surround",
 
-	use "tpope/vim-fugitive"
+	 "tpope/vim-fugitive",
 
-	use {
+	 {
 		"TimUntersberger/neogit",
 		config = function()
 			require('neogit').setup{
 				integrations = { diffview = true },
 			}
 		end
-	}
+	},
 
-	use "sindrets/diffview.nvim"
+	 "sindrets/diffview.nvim",
 
-	use {
+	 {
 		'lewis6991/gitsigns.nvim',
 		tag = 'release',
 		config = function()
 			require('gitsigns').setup()
 		end
-	}
+	},
 
-	use {
+	 {
 		'kyazdani42/nvim-tree.lua',
-		requires = {
+		dependencies = {
 			'kyazdani42/nvim-web-devicons', -- optional, for file icons
 		},
-		setup = function()
+		init = function()
 			    vim.g.loaded = 1
 			    vim.g.loaded_netrwPlugin = 1
 		end,
@@ -133,12 +148,12 @@ return require('packer').startup(function(use)
 			}
 			vim.keymap.set("n","<C-n>","<Cmd>NvimTreeToggle<CR>", {})
 		end
-	}
+	},
 
-	use {
+	 {
 		'akinsho/bufferline.nvim',
-		tag = "v2.*",
-		requires = 'kyazdani42/nvim-web-devicons',
+		tag = "v3.0.0",
+		dependencies = 'kyazdani42/nvim-web-devicons',
 		config = function()
 			vim.opt.termguicolors = true
 			require("bufferline").setup{
@@ -148,11 +163,11 @@ return require('packer').startup(function(use)
 					}
 				}
 		end
-	}
+	},
 
-	use {
+	 {
 		'nvim-treesitter/nvim-treesitter',
-		run = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
+		build = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
 		config = function()
 			require'nvim-treesitter.configs'.setup {
 				-- A list of parser names, or "all"
@@ -168,8 +183,8 @@ return require('packer').startup(function(use)
 
 			}
 		end
-	}
-	use { "nvim-treesitter/nvim-treesitter-textobjects",
+	},
+	 { "nvim-treesitter/nvim-treesitter-textobjects",
 		config = function ()
 		require('nvim-treesitter.configs').setup({
 			textobjects = {
@@ -184,10 +199,10 @@ return require('packer').startup(function(use)
 				}
 			}
 		})
-	end }
+	end },
 
-	use { "ms-jpq/coq_nvim", disable = true, setup = require('vd.lspsetup').setup_coq }
-	use { 'hrsh7th/nvim-cmp', requires = {
+	 { "ms-jpq/coq_nvim", enabled = false, setup = require('vd.lspsetup').setup_coq },
+	 { 'hrsh7th/nvim-cmp', dependencies = {
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-path',
 			'hrsh7th/cmp-cmdline',
@@ -196,12 +211,12 @@ return require('packer').startup(function(use)
 			'hrsh7th/vim-vsnip',
 		},
 		config = require('vd.lspsetup').config_nvimcmp
-	}
-	use { "neovim/nvim-lspconfig", config = require('vd.lspsetup').config_lspconfig }
+	},
+	 { "neovim/nvim-lspconfig", config = require('vd.lspsetup').config_lspconfig },
 
-	use {
+	 {
 		"nvim-neorg/neorg",
-		run = ":Neorg sync-parsers",
+		build = ":Neorg sync-parsers",
 		config = function()
 			require('neorg').setup {
 				load = {
@@ -209,42 +224,42 @@ return require('packer').startup(function(use)
 				}
 			}
 		end,
-	}
+	},
 
-	use {
+	 {
 		"j-hui/fidget.nvim",
 		config = function()
 			require"fidget".setup{}
 		end
-	}
+	},
 
-	use {
+	 {
 		"sbdchd/neoformat",
-		setup = function()
+		init = function()
 			vim.g.neoformat_cpp_clangformat = { exe =  'clang-format', }
 			vim.g.neoformat_enabled_cpp = {'clangformat'}
 			vim.g.neoformat_enabled_c = {'clangformat'}
 		end
-	}
+	},
 
-	use { "chrisbra/csv.vim", ft = { "csv" } }
+	 { "chrisbra/csv.vim", ft = { "csv" } },
 
 	-- SessionLoad
 	-- SessionSave
 	-- SessionStop
-	use {'natecraddock/sessions.nvim', config = function ()
+	 {'natecraddock/sessions.nvim', config = function ()
 		require("sessions").setup({
 			session_filepath = "./.session",
 		})
 
 		require("vd.autocmds").au_session()
-	end}
+	end},
 
 
-	use {'dstein64/vim-startuptime', disable=true}
+	 {'dstein64/vim-startuptime', enabled=false},
 
 	-- TODO: Resize support
-	use { "aserowy/tmux.nvim", config = function ()
+	 { "aserowy/tmux.nvim", config = function ()
 		require("tmux").setup({
 			navigation = {
 				cycle_navigation = false,
@@ -262,6 +277,6 @@ return require('packer').startup(function(use)
 		})
 		require("vd.keymaps").tmux_keymaps()
 	end}
+}
 
-
-end)
+require("lazy").setup(plugins, {})

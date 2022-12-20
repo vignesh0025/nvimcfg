@@ -4,11 +4,11 @@ vim.g.maplocalleader=[[\<space>]]
 --vim.lsp.set_log_level("debug")
 pcall(require, 'paths')
 
-local ok, ret = pcall(require, 'plenary.reload')
+local ok, mod = pcall(require, 'plenary.reload')
 if not ok then
-    print("Planery Not Available"..ret)
+    print("Planery Not Available"..mod)
 else
-    ret.reload_module("vd.", true)
+    mod.reload_module("vd.", true)
 end
 
 

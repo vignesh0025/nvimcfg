@@ -1,5 +1,7 @@
 local autocmd = vim.api.nvim_create_autocmd
 
+local setup = function()
+
 -- Clears the group if present
 local filetype_group = vim.api.nvim_create_augroup("FileTypeGroup", {clear = false})
 local ui_group = vim.api.nvim_create_augroup("UIGroup", {clear = false})
@@ -22,6 +24,15 @@ autocmd('BufEnter', {
 	group = ui_group
 })
 
+vim.cmd[[match ExtraWhitespace /\s\+\%#\@<!$/]]
+
+autocmd('ColorScheme', {
+	pattern = "*",
+	desc = 'Highlight trailing whitespace wigh ExtraWhiteSpace group',
+	command = 'highlight ExtraWhitespace ctermbg=red guibg=red',
+	group = ui_group
+})
+	
 local yh_group = vim.api.nvim_create_augroup("yank_highlight", {})
 
 autocmd("TextYankPost", {
@@ -32,6 +43,14 @@ autocmd("TextYankPost", {
 	end,
 })
 
+autocmd({ 'BufWritePre' }, {
+	desc = 'trim buffer whitespaces',
+	pattern = '*',
+	command = [[%s/\s\+$//e]],
+})
+
+end
+
 -- vim.api.nvim_create_autocmd('LspAttach', {
 --   desc = 'LSP actions',
 --   callback = function()
@@ -39,11 +58,23 @@ autocmd("TextYankPost", {
 --   end
 -- })
 
--- autocmd({ 'BufWritePre' }, {
--- 	desc = 'trim buffer whitespaces',
--- 	pattern = '*',
--- 	command = 'TrimTrailingWhitespace',
--- 	group = filetype_group
--- })
+local au_session = function ()
+	local session_grp = vim.api.nvim_create_augroup("SessionGrp", {clear = true})
+	autocmd('VimEnter', {
+		desc = 'Source .session file if it exists',
+		pattern = "*",
+		group = session_grp,
+		nested = true,
+		callback = function ()
+			local args = vim.fn.argv()
+			if #args == 0 then
+				require("sessions").load(nil, { silent = true })
+			end
+		end
+	})
+end
 
-
+return {
+	setup = setup,
+	au_session = au_session,
+}

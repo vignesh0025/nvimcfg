@@ -16,13 +16,18 @@ return require('packer').startup(function(use)
 		end,
 	}
 
+	use { "EdenEast/nightfox.nvim",
+		config = function ()
+			vim.cmd("colorscheme nightfox")
+		end
+	}
 	use { "folke/tokyonight.nvim",
 		config = function()
 			require("tokyonight").setup({
 				style = "storm",
 					theme = 'tokyonight'
 			})
-			vim.cmd[[colorscheme tokyonight]]
+			-- vim.cmd[[colorscheme tokyonight]]
 		end
 	}
 
@@ -73,7 +78,7 @@ return require('packer').startup(function(use)
 						require("telescope.themes").get_dropdown {}
 					},
 					["file_browser"] = {
-						depth = 4
+						depth = 1
 					}
 				}
 			}
@@ -151,7 +156,7 @@ return require('packer').startup(function(use)
 		config = function()
 			require'nvim-treesitter.configs'.setup {
 				-- A list of parser names, or "all"
-				ensure_installed = { "c", "lua", "python" },
+				ensure_installed = { "c", "lua", "python", "cpp" },
 				sync_install = false,
 				highlight = {
 					-- `false` will disable the whole extension
@@ -164,8 +169,24 @@ return require('packer').startup(function(use)
 			}
 		end
 	}
+	use { "nvim-treesitter/nvim-treesitter-textobjects",
+		config = function ()
+		require('nvim-treesitter.configs').setup({
+			textobjects = {
+				select = {
+					enable = true,
+					keymaps = {
+						["af"] = "@function.outer",
+						["if"] = "@function.inner",
+						["ac"] = "@class.outer",
+						["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+					},
+				}
+			}
+		})
+	end }
 
-	use { "ms-jpq/coq_nvim", setup = require('vd.lspsetup').setup_coq }
+	use { "ms-jpq/coq_nvim", disable = true, setup = require('vd.lspsetup').setup_coq }
 	use { 'hrsh7th/nvim-cmp', requires = {
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-path',
@@ -206,12 +227,47 @@ return require('packer').startup(function(use)
 	use {
 		"sbdchd/neoformat",
 		setup = function()
-			vim.g.neoformat_cpp_clangformat = { exe =  '/usr/intel/pkgs/clang/11.0.1/bin/clang-format', }
+			vim.g.neoformat_cpp_clangformat = { exe =  'clang-format', }
 			vim.g.neoformat_enabled_cpp = {'clangformat'}
 			vim.g.neoformat_enabled_c = {'clangformat'}
 		end
 	}
 
 	use { "chrisbra/csv.vim", ft = { "csv" } }
+
+	-- SessionLoad
+	-- SessionSave
+	-- SessionStop
+	use {'natecraddock/sessions.nvim', config = function ()
+		require("sessions").setup({
+			session_filepath = "./.session",
+		})
+
+		require("vd.autocmds").au_session()
+	end}
+
+
+	use {'dstein64/vim-startuptime', disable=true}
+
+	-- TODO: Resize support
+	use { "aserowy/tmux.nvim", config = function ()
+		require("tmux").setup({
+			navigation = {
+				cycle_navigation = false,
+			},
+		-- 	resize = {
+		-- 		-- enables default keybindings (A-hjkl) for normal mode
+		-- 		enable_default_keybindings = false,
+
+		-- 		-- sets resize steps for x axis
+		-- 		resize_step_x = 1,
+
+		-- 		-- sets resize steps for y axis
+		-- 		resize_step_y = 1,
+		-- 	}
+		})
+		require("vd.keymaps").tmux_keymaps()
+	end}
+
 
 end)

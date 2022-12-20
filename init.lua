@@ -1,3 +1,6 @@
+vim.g.mapleader=" "
+vim.g.maplocalleader=[[\<space>]]
+
 --vim.lsp.set_log_level("debug")
 pcall(require, 'paths')
 
@@ -26,9 +29,9 @@ vim.o.scrolloff = 3
 -- set expandtab
 
 -- filetype plugin indent on
-
-vim.g.mapleader=" "
-vim.g.maplocalleader=[[\<space>]]
+vim.opt.isfname:append({'{', '}'})
+vim.opt.isfname:remove({'='})
+vim.opt.listchars:append({trail="~"})
 
 -- load lua/plugins.lua
 require('vd.filetype')

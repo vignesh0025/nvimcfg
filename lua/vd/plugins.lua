@@ -113,6 +113,7 @@ local plugins = {
 
 	 {
 		"TimUntersberger/neogit",
+		command = 'Neogit',
 		config = function()
 			require('neogit').setup{
 				integrations = { diffview = true },
@@ -167,6 +168,7 @@ local plugins = {
 
 	 {
 		'nvim-treesitter/nvim-treesitter',
+		event = 'BufRead',
 		build = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
 		config = function()
 			require'nvim-treesitter.configs'.setup {
@@ -185,6 +187,7 @@ local plugins = {
 		end
 	},
 	 { "nvim-treesitter/nvim-treesitter-textobjects",
+		event = 'BufRead',
 		config = function ()
 		require('nvim-treesitter.configs').setup({
 			textobjects = {
@@ -202,7 +205,9 @@ local plugins = {
 	end },
 
 	 { "ms-jpq/coq_nvim", enabled = false, setup = require('vd.lspsetup').setup_coq },
-	 { 'hrsh7th/nvim-cmp', dependencies = {
+	 { 'hrsh7th/nvim-cmp',
+		event = 'InsertEnter',
+		dependencies = {
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-path',
 			'hrsh7th/cmp-cmdline',

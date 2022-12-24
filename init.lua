@@ -4,10 +4,7 @@ vim.g.maplocalleader=[[\<space>]]
 --vim.lsp.set_log_level("debug")
 pcall(require, 'paths')
 
--- load lua/plugins.lua
-require('vd.filetype')
-require('vd.autocmds').setup()
-require('vd.plugins')
+require('vd')
 
 local ok, mod = pcall(require, 'plenary.reload')
 if not ok then
@@ -36,3 +33,5 @@ vim.o.scrolloff = 3
 vim.opt.isfname:append({'{', '}'})
 vim.opt.isfname:remove({'='})
 vim.opt.listchars:append({trail="~"})
+
+vim.keymap.set("x", "<leader>p", "\"_dP")

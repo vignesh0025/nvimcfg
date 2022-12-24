@@ -13,11 +13,7 @@ vim.opt.runtimepath:prepend(lazypath)
 
 local plugins = {
 
-	{ "EdenEast/nightfox.nvim",
-		config = function ()
-			vim.cmd("colorscheme terafox")
-		end
-	},
+	{ "EdenEast/nightfox.nvim", lazy = true },
 
 	'wellle/targets.vim', -- Nice Plugin to add more selection
 
@@ -265,7 +261,7 @@ local plugins = {
 
 	-- TODO: Resize support
 	 { "aserowy/tmux.nvim", config = function ()
-		require("tmux").setup({
+		require("tmux").setup{
 			navigation = {
 				cycle_navigation = false,
 			},
@@ -279,9 +275,29 @@ local plugins = {
 		-- 		-- sets resize steps for y axis
 		-- 		resize_step_y = 1,
 		-- 	}
-		})
+		}
 		require("vd.keymaps").tmux_keymaps()
 	end}
 }
 
-require("lazy").setup(plugins, {})
+local opt = {
+	ui = {
+		custom_keys = {
+			-- open lazygit log
+			["<leader>l"] = function(plugin)
+				require("lazy.util").open_cmd({ "lazygit", "log" }, { cwd = plugin.dir, terminal = true, close_on_exit = true, enter = true})
+			end,
+
+			["<leader>t"] = function(plugin)
+				require("lazy.util").open_cmd({ vim.go.shell }, {
+					cwd = plugin.dir,
+					terminal = true,
+					close_on_exit = true,
+					enter = true,
+				})
+			end,
+		},
+	}
+}
+
+require("lazy").setup(plugins, opt)

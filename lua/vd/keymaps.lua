@@ -54,7 +54,29 @@ local tmux_keymaps = function ()
 	vim.keymap.set('n', '<m-Right>', require("tmux").move_right, {})
 end
 
+local lazy_keymaps = function ()
+
+	local set_term_cmd_keymap = function (key, cmd, close_on_exit)
+		vim.keymap.set('n',key, function ()
+			require("lazy.util").open_cmd(cmd, {
+				cwd = "./",
+				terminal = true,
+				close_on_exit = close_on_exit or true,
+				enter = true,
+			})
+		end, {})
+	end
+
+	set_term_cmd_keymap(",gg", {"lazygit"})
+	set_term_cmd_keymap(",gl", {"lazygit", "log"})
+	set_term_cmd_keymap(",gs", {"lazygit", "status"})
+	set_term_cmd_keymap(",gb", {"lazygit", "branch"})
+	set_term_cmd_keymap(",gt", {"lazygit", "stash"})
+
+end
+
 return {
 	telescope_keymaps = telescope_keymaps,
-	tmux_keymaps = tmux_keymaps
+	tmux_keymaps = tmux_keymaps,
+	lazy_keymaps = lazy_keymaps
 }

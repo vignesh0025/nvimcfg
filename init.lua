@@ -33,5 +33,7 @@ vim.o.scrolloff = 3
 vim.opt.isfname:append({'{', '}'})
 vim.opt.isfname:remove({'='})
 vim.opt.listchars:append({trail="~"})
+vim.opt.swapfile = false
 
+vim.keymap.set("x",'/','<Esc>/\\%V')
 vim.keymap.set("x", "<leader>p", "\"_dP")

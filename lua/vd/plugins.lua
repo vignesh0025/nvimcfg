@@ -61,8 +61,7 @@ local plugins = {
 		branch = "0.1.x",
 		dependencies = {
 			{"nvim-lua/plenary.nvim"},
-			{ "vignesh0025/telescope-file-browser.nvim" },
-			-- { "nvim-telescope/telescope-file-browser.nvim" },
+			{ "nvim-telescope/telescope-file-browser.nvim" },
 			-- {'nvim-telescope/telescope-ui-select.nvim'},
 			{'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
 			{ "nvim-telescope/telescope-live-grep-args.nvim" },
@@ -105,11 +104,9 @@ local plugins = {
 
 	 "tpope/vim-surround",
 
-	 "tpope/vim-fugitive",
-
 	 {
 		"TimUntersberger/neogit",
-		command = 'Neogit',
+		cmd = 'Neogit',
 		config = function()
 			require('neogit').setup{
 				integrations = { diffview = true },
@@ -277,27 +274,37 @@ local plugins = {
 		-- 	}
 		}
 		require("vd.keymaps").tmux_keymaps()
-	end}
-}
+	end},
 
-local opt = {
-	ui = {
-		custom_keys = {
-			-- open lazygit log
-			["<leader>l"] = function(plugin)
-				require("lazy.util").open_cmd({ "lazygit", "log" }, { cwd = plugin.dir, terminal = true, close_on_exit = true, enter = true})
-			end,
-
-			["<leader>t"] = function(plugin)
-				require("lazy.util").open_cmd({ vim.go.shell }, {
-					cwd = plugin.dir,
-					terminal = true,
-					close_on_exit = true,
-					enter = true,
-				})
-			end,
-		},
+	{
+		'glepnir/lspsaga.nvim',
+		branch = "main",
+		cmd = "Lspsaga",
+		config = function ()
+			require("lspsaga")
+		end
 	}
 }
 
+local opt = {
+	-- ui = {
+	-- 	custom_keys = {
+	-- 		-- open lazygit log
+	-- 		["<leader>l"] = function(plugin)
+	-- 			require("lazy.util").open_cmd({ "lazygit", "log" }, { cwd = plugin.dir, terminal = true, close_on_exit = true, enter = true})
+	-- 		end,
+
+	-- 		["<leader>t"] = function(plugin)
+	-- 			require("lazy.util").open_cmd({ vim.go.shell }, {
+	-- 				cwd = plugin.dir,
+	-- 				terminal = true,
+	-- 				close_on_exit = true,
+	-- 				enter = true,
+	-- 			})
+	-- 		end,
+	-- 	},
+	-- }
+}
+
 require("lazy").setup(plugins, opt)
+require("vd.keymaps").lazy_keymaps()

@@ -3,7 +3,7 @@ if not path then
     print("Path Not Available")
 end
 
-M = {}
+local M = {}
 
 M.plugin = {}
 

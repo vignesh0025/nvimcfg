@@ -48,7 +48,16 @@ vim.opt.rtp:prepend(lazypath)local plugins = {
 			require('lualine').setup{
 				options =  {
 					globalstatus = true,
-				}
+				},
+				sections = {
+					lualine_x = {
+						{
+							require("lazy.status").updates,
+							cond = require("lazy.status").has_updates,
+							color = { fg = "#ff9e64" },
+						},
+					},
+				},
 			}
 		end
 	},
@@ -115,7 +124,16 @@ vim.opt.rtp:prepend(lazypath)local plugins = {
 		end
 	},
 
-	 "sindrets/diffview.nvim",
+	{
+		"sindrets/diffview.nvim",
+		config = function ()
+			if vconfig.plugin.diffview_config then
+				require("diffview").setup(vconfig.plugin.diffview_config)
+			else
+				require("diffview").setup()
+			end
+		end
+	},
 
 	 {
 		'lewis6991/gitsigns.nvim',
@@ -206,8 +224,9 @@ vim.opt.rtp:prepend(lazypath)local plugins = {
 			'hrsh7th/cmp-path',
 			'hrsh7th/cmp-cmdline',
 			'hrsh7th/cmp-nvim-lsp',
-			'hrsh7th/cmp-vsnip',
-			'hrsh7th/vim-vsnip',
+			'SirVer/ultisnips',
+			'quangnguyen30192/cmp-nvim-ultisnips',
+			'honza/vim-snippets'
 		},
 		config = require('vd.lspsetup').config_nvimcmp
 	},
@@ -235,16 +254,7 @@ vim.opt.rtp:prepend(lazypath)local plugins = {
 		end
 	},
 
-	 {
-		"sbdchd/neoformat",
-		init = function()
-			vim.g.neoformat_cpp_clangformat = { exe =  'clang-format', }
-			vim.g.neoformat_enabled_cpp = {'clangformat'}
-			vim.g.neoformat_enabled_c = {'clangformat'}
-		end
-	},
-
-	 { "chrisbra/csv.vim", ft = { "csv" } },
+	{ "chrisbra/csv.vim", ft = { "csv" } },
 
 	-- SessionLoad
 	-- SessionSave
@@ -261,24 +271,21 @@ vim.opt.rtp:prepend(lazypath)local plugins = {
 	 {'dstein64/vim-startuptime', enabled=false},
 
 	-- TODO: Resize support
-	 { "aserowy/tmux.nvim", config = function ()
-		require("tmux").setup{
-			navigation = {
-				cycle_navigation = false,
-			},
-		-- 	resize = {
-		-- 		-- enables default keybindings (A-hjkl) for normal mode
-		-- 		enable_default_keybindings = false,
-
-		-- 		-- sets resize steps for x axis
-		-- 		resize_step_x = 1,
-
-		-- 		-- sets resize steps for y axis
-		-- 		resize_step_y = 1,
-		-- 	}
-		}
-		require("vd.keymaps").tmux_keymaps()
-	end},
+	{
+		"aserowy/tmux.nvim",
+		config = function ()
+			require("tmux").setup{
+				navigation = {
+					cycle_navigation = false,
+				},
+				copy_sync = {
+					enable = false,
+					redirect_to_clipboard = false
+				}
+			}
+			require("vd.keymaps").tmux_keymaps()
+		end
+	},
 
 	{
 		'glepnir/lspsaga.nvim',
@@ -286,6 +293,21 @@ vim.opt.rtp:prepend(lazypath)local plugins = {
 		cmd = "Lspsaga",
 		config = function ()
 			require("lspsaga")
+		end
+	},
+
+	{
+		"jose-elias-alvarez/null-ls.nvim",
+		config = function ()
+			local null_ls = require("null-ls")
+
+			null_ls.setup({
+				sources = {
+					null_ls.builtins.code_actions.gitsigns,
+					null_ls.builtins.formatting.clang_format,
+					null_ls.builtins.diagnostics.cppcheck
+				},
+			})
 		end
 	}
 }
@@ -308,6 +330,9 @@ local opt = {
 	-- 		end,
 	-- 	},
 	-- }
+	diff = {
+		cmd = "diffview.nvim"
+	}
 }
 
 require("lazy").setup(plugins, opt)

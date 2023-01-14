@@ -66,6 +66,8 @@ vim.g.on_attach = function(_, bufnr)
 		vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
 	end
 
+	vim.keymap.set('n', 'gp', '<cmd>Lspsaga lsp_finder<cr>', bufopts)
+
 end
 
 
@@ -117,7 +119,8 @@ local config_nvimcmp = function ()
 	cmp.setup({
 		snippet = {
 			expand = function(args)
-				vim.fn["vsnip#anonymous"](args.body)
+				-- vim.fn["vsnip#anonymous"](args.body)
+				vim.fn["UltiSnips#Anon"](args.body)
 			end,
 		},
 		window = {
@@ -166,7 +169,8 @@ local config_nvimcmp = function ()
 		}),
 		sources = cmp.config.sources({
 			{ name = 'nvim_lsp' },
-			{ name = 'vsnip' },
+			-- { name = 'vsnip' },
+			{ name = 'ultisnips' },
 		}, {
 			{ name = 'buffer' },
 		})

@@ -8,6 +8,5 @@ M = {}
 M.plugin = {}
 
 M.plugin.mason_enabled = (path and mod.mason_enabled) or false
-print(M.plugin.mason_enabled)
 
 return M

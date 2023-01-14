@@ -8,5 +8,6 @@ local M = {}
 M.plugin = {}
 
 M.plugin.mason_enabled = (path and mod.mason_enabled) or false
+M.plugin.neodev_enabled = (path and mod.neodev_enabled) or false
 
 return M

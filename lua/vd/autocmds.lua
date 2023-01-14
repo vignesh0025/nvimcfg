@@ -6,12 +6,6 @@ local setup = function()
 local filetype_group = vim.api.nvim_create_augroup("FileTypeGroup", {clear = false})
 local ui_group = vim.api.nvim_create_augroup("UIGroup", {clear = false})
 
-autocmd({"BufEnter", "BufWinEnter"}, {
-	pattern = {"*.test_suite", "*.testsuite"},
-	callback = function() vim.bo.filetype = "xml"  end,
-	group = filetype_group,
-})
-
 autocmd('VimResized', {
 	desc = 'Keep windows equally resized',
 	command = 'tabdo wincmd =',
@@ -32,7 +26,7 @@ autocmd('ColorScheme', {
 	command = 'highlight ExtraWhitespace ctermbg=red guibg=red',
 	group = ui_group
 })
-	
+
 local yh_group = vim.api.nvim_create_augroup("yank_highlight", {})
 
 autocmd("TextYankPost", {

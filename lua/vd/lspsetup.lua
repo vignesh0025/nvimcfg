@@ -1,3 +1,5 @@
+local vconfig = require("config_enable")
+
 vim.g.kind_icons = {
     Text = ' ',
     Method = ' ',
@@ -68,6 +70,12 @@ end
 
 
 local config_lspconfig = function ()
+
+	if vconfig.plugin.mason_enabled then
+		require("mason").setup()
+		require("mason-lspconfig").setup()
+	end
+
 	local lspconfig = require('lspconfig')
 
 	local use_coq = false

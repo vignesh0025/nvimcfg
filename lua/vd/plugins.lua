@@ -1,27 +1,35 @@
+local vconfig = require("config_enable")
 
-return require('packer').startup(function(use)
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
 
-	-- Packer can manage itself
-	use "wbthomason/packer.nvim"
+vim.opt.rtp:prepend(lazypath)local plugins = {
 
-	use 'wellle/targets.vim' -- Nice Plugin to add more selection
+	{ "EdenEast/nightfox.nvim", lazy = true },
 
-	use 'tpope/vim-unimpaired'
+	'wellle/targets.vim', -- Nice Plugin to add more selection
 
-	use { "ellisonleao/gruvbox.nvim",
-		disable = true,
+	'tpope/vim-unimpaired',
+
+	{ "ellisonleao/gruvbox.nvim",
+		enabled = false,
 		config = function()
 			vim.o.background = "dark"
 			-- vim.cmd([[colorscheme gruvbox]])
 		end,
-	}
+	},
 
-	use { "EdenEast/nightfox.nvim",
-		config = function ()
-			vim.cmd("colorscheme nightfox")
-		end
-	}
-	use { "folke/tokyonight.nvim",
+	 { "folke/tokyonight.nvim",
+		enabled = false,
 		config = function()
 			require("tokyonight").setup({
 				style = "storm",
@@ -29,13 +37,13 @@ return require('packer').startup(function(use)
 			})
 			-- vim.cmd[[colorscheme tokyonight]]
 		end
-	}
+	},
 
-	use {'kyazdani42/nvim-web-devicons'}
+	 -- {'kyazdani42/nvim-web-devicons'}
 
-	use {
+	 {
 		'nvim-lualine/lualine.nvim',
-		requires = { 'kyazdani42/nvim-web-devicons'},
+		dependencies = { 'kyazdani42/nvim-web-devicons'},
 		config = function()
 			require('lualine').setup{
 				options =  {
@@ -43,17 +51,20 @@ return require('packer').startup(function(use)
 				}
 			}
 		end
-	}
+	},
 
-	use {
+	-- you can use the VeryLazy event for things that can
+	-- load later and are not important for the initial UI
+	{ "stevearc/dressing.nvim", event = "VeryLazy" },
+
+	 {
 		"nvim-telescope/telescope.nvim",
 		branch = "0.1.x",
-		requires = {
+		dependencies = {
 			{"nvim-lua/plenary.nvim"},
-			{ "vignesh0025/telescope-file-browser.nvim" },
-			-- { "nvim-telescope/telescope-file-browser.nvim" },
-			{'nvim-telescope/telescope-ui-select.nvim'},
-			{'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+			{ "nvim-telescope/telescope-file-browser.nvim" },
+			-- {'nvim-telescope/telescope-ui-select.nvim'},
+			{'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
 			{ "nvim-telescope/telescope-live-grep-args.nvim" },
 		},
 		config = function()
@@ -82,45 +93,44 @@ return require('packer').startup(function(use)
 					}
 				}
 			}
-			require("telescope").load_extension("ui-select")
+			-- require("telescope").load_extension("ui-select")
 			require("telescope").load_extension("file_browser")
 			require('telescope').load_extension('fzf')
 			require("telescope").load_extension("live_grep_args")
 			require('vd.keymaps').telescope_keymaps()
 		end
-	}
+	},
 
-	use "tpope/vim-commentary"
+	 "tpope/vim-commentary",
 
-	use "tpope/vim-surround"
+	 "tpope/vim-surround",
 
-	use "tpope/vim-fugitive"
-
-	use {
+	 {
 		"TimUntersberger/neogit",
+		cmd = 'Neogit',
 		config = function()
 			require('neogit').setup{
 				integrations = { diffview = true },
 			}
 		end
-	}
+	},
 
-	use "sindrets/diffview.nvim"
+	 "sindrets/diffview.nvim",
 
-	use {
+	 {
 		'lewis6991/gitsigns.nvim',
 		tag = 'release',
 		config = function()
 			require('gitsigns').setup()
 		end
-	}
+	},
 
-	use {
+	 {
 		'kyazdani42/nvim-tree.lua',
-		requires = {
+		dependencies = {
 			'kyazdani42/nvim-web-devicons', -- optional, for file icons
 		},
-		setup = function()
+		init = function()
 			    vim.g.loaded = 1
 			    vim.g.loaded_netrwPlugin = 1
 		end,
@@ -133,12 +143,12 @@ return require('packer').startup(function(use)
 			}
 			vim.keymap.set("n","<C-n>","<Cmd>NvimTreeToggle<CR>", {})
 		end
-	}
+	},
 
-	use {
+	 {
 		'akinsho/bufferline.nvim',
-		tag = "v2.*",
-		requires = 'kyazdani42/nvim-web-devicons',
+		tag = "v3.0.0",
+		dependencies = 'kyazdani42/nvim-web-devicons',
 		config = function()
 			vim.opt.termguicolors = true
 			require("bufferline").setup{
@@ -148,11 +158,12 @@ return require('packer').startup(function(use)
 					}
 				}
 		end
-	}
+	},
 
-	use {
+	 {
 		'nvim-treesitter/nvim-treesitter',
-		run = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
+		event = 'BufRead',
+		build = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
 		config = function()
 			require'nvim-treesitter.configs'.setup {
 				-- A list of parser names, or "all"
@@ -168,8 +179,9 @@ return require('packer').startup(function(use)
 
 			}
 		end
-	}
-	use { "nvim-treesitter/nvim-treesitter-textobjects",
+	},
+	 { "nvim-treesitter/nvim-treesitter-textobjects",
+		event = 'BufRead',
 		config = function ()
 		require('nvim-treesitter.configs').setup({
 			textobjects = {
@@ -184,10 +196,12 @@ return require('packer').startup(function(use)
 				}
 			}
 		})
-	end }
+	end },
 
-	use { "ms-jpq/coq_nvim", disable = true, setup = require('vd.lspsetup').setup_coq }
-	use { 'hrsh7th/nvim-cmp', requires = {
+	 { "ms-jpq/coq_nvim", enabled = false, setup = require('vd.lspsetup').setup_coq },
+	 { 'hrsh7th/nvim-cmp',
+		event = 'InsertEnter',
+		dependencies = {
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-path',
 			'hrsh7th/cmp-cmdline',
@@ -196,12 +210,15 @@ return require('packer').startup(function(use)
 			'hrsh7th/vim-vsnip',
 		},
 		config = require('vd.lspsetup').config_nvimcmp
-	}
-	use { "neovim/nvim-lspconfig", config = require('vd.lspsetup').config_lspconfig }
+	},
 
-	use {
+	{ "williamboman/mason.nvim", enabled = vconfig.plugin.mason_enabled },
+	{ "williamboman/mason-lspconfig.nvim", enabled = vconfig.plugin.mason_enabled },
+	{ "neovim/nvim-lspconfig", config = require('vd.lspsetup').config_lspconfig },
+
+	{
 		"nvim-neorg/neorg",
-		run = ":Neorg sync-parsers",
+		build = ":Neorg sync-parsers",
 		config = function()
 			require('neorg').setup {
 				load = {
@@ -209,43 +226,43 @@ return require('packer').startup(function(use)
 				}
 			}
 		end,
-	}
+	},
 
-	use {
+	 {
 		"j-hui/fidget.nvim",
 		config = function()
 			require"fidget".setup{}
 		end
-	}
+	},
 
-	use {
+	 {
 		"sbdchd/neoformat",
-		setup = function()
+		init = function()
 			vim.g.neoformat_cpp_clangformat = { exe =  'clang-format', }
 			vim.g.neoformat_enabled_cpp = {'clangformat'}
 			vim.g.neoformat_enabled_c = {'clangformat'}
 		end
-	}
+	},
 
-	use { "chrisbra/csv.vim", ft = { "csv" } }
+	 { "chrisbra/csv.vim", ft = { "csv" } },
 
 	-- SessionLoad
 	-- SessionSave
 	-- SessionStop
-	use {'natecraddock/sessions.nvim', config = function ()
+	 {'natecraddock/sessions.nvim', config = function ()
 		require("sessions").setup({
 			session_filepath = "./.session",
 		})
 
 		require("vd.autocmds").au_session()
-	end}
+	end},
 
 
-	use {'dstein64/vim-startuptime', disable=true}
+	 {'dstein64/vim-startuptime', enabled=false},
 
 	-- TODO: Resize support
-	use { "aserowy/tmux.nvim", config = function ()
-		require("tmux").setup({
+	 { "aserowy/tmux.nvim", config = function ()
+		require("tmux").setup{
 			navigation = {
 				cycle_navigation = false,
 			},
@@ -259,9 +276,39 @@ return require('packer').startup(function(use)
 		-- 		-- sets resize steps for y axis
 		-- 		resize_step_y = 1,
 		-- 	}
-		})
+		}
 		require("vd.keymaps").tmux_keymaps()
-	end}
+	end},
 
+	{
+		'glepnir/lspsaga.nvim',
+		branch = "main",
+		cmd = "Lspsaga",
+		config = function ()
+			require("lspsaga")
+		end
+	}
+}
 
-end)
+local opt = {
+	-- ui = {
+	-- 	custom_keys = {
+	-- 		-- open lazygit log
+	-- 		["<leader>l"] = function(plugin)
+	-- 			require("lazy.util").open_cmd({ "lazygit", "log" }, { cwd = plugin.dir, terminal = true, close_on_exit = true, enter = true})
+	-- 		end,
+
+	-- 		["<leader>t"] = function(plugin)
+	-- 			require("lazy.util").open_cmd({ vim.go.shell }, {
+	-- 				cwd = plugin.dir,
+	-- 				terminal = true,
+	-- 				close_on_exit = true,
+	-- 				enter = true,
+	-- 			})
+	-- 		end,
+	-- 	},
+	-- }
+}
+
+require("lazy").setup(plugins, opt)
+require("vd.keymaps").lazy_keymaps()

@@ -1,3 +1,5 @@
+local vconfig = require("config_enable")
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -209,9 +211,12 @@ vim.opt.rtp:prepend(lazypath)local plugins = {
 		},
 		config = require('vd.lspsetup').config_nvimcmp
 	},
-	 { "neovim/nvim-lspconfig", config = require('vd.lspsetup').config_lspconfig },
 
-	 {
+	{ "williamboman/mason.nvim", enabled = vconfig.plugin.mason_enabled },
+	{ "williamboman/mason-lspconfig.nvim", enabled = vconfig.plugin.mason_enabled },
+	{ "neovim/nvim-lspconfig", config = require('vd.lspsetup').config_lspconfig },
+
+	{
 		"nvim-neorg/neorg",
 		build = ":Neorg sync-parsers",
 		config = function()

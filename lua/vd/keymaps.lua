@@ -58,7 +58,7 @@ local lazy_keymaps = function ()
 
 	local set_term_cmd_keymap = function (key, cmd, close_on_exit)
 		vim.keymap.set('n',key, function ()
-			require("lazy.util").open_cmd(cmd, {
+			require("lazy.util").float_term(cmd, {
 				cwd = "./",
 				terminal = true,
 				close_on_exit = close_on_exit or true,

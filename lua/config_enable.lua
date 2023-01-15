@@ -10,6 +10,7 @@ M.plugin = {}
 M.plugin.mason_enabled = (path and mod.mason_enabled) or false
 M.plugin.neodev_enabled = (path and mod.neodev_enabled) or false
 M.plugin.rust_analyzer = (path and mod.rust_analyzer) or false
+M.plugin.neorg_enabled = (path and mod.neorg_enabled) or false
 
 M.get_addn_nulls_srcs = function()
 	if mod.enbl_nulls_addn_srcs then

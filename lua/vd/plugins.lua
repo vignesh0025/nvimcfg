@@ -245,6 +245,7 @@ local plugins = {
 	{
 		"nvim-neorg/neorg",
 		build = ":Neorg sync-parsers",
+		enabled = vconfig.plugin.neorg_enabled,
 		config = function()
 			require('neorg').setup {
 				load = {

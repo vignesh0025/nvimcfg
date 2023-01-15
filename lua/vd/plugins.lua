@@ -218,6 +218,11 @@ local plugins = {
 		})
 	end },
 
+	{
+		"folke/neodev.nvim",
+		enabled = vconfig.plugin.neodev_enabled
+	},
+
 	 { "ms-jpq/coq_nvim", enabled = false, setup = require('vd.lspsetup').setup_coq },
 	 { 'hrsh7th/nvim-cmp',
 		event = 'InsertEnter',
@@ -292,7 +297,6 @@ local plugins = {
 	{
 		'glepnir/lspsaga.nvim',
 		branch = "main",
-		cmd = "Lspsaga",
 		config = function ()
 			require("lspsaga")
 		end
@@ -308,16 +312,12 @@ local plugins = {
 					null_ls.builtins.code_actions.gitsigns,
 					null_ls.builtins.formatting.clang_format,
 					null_ls.builtins.diagnostics.cppcheck,
-					null_ls.builtins.diagnostics.luacheck
+					null_ls.builtins.diagnostics.luacheck,
+					null_ls.builtins.formatting.stylua
 				},
 			})
 		end
 	},
-
-	{
-		"folke/neodev.nvim",
-		enabled = vconfig.plugin.neodev_enabled
-	}
 }
 
 local opt = {

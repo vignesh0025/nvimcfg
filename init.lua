@@ -8,9 +8,9 @@ require('vd')
 
 local ok, mod = pcall(require, 'plenary.reload')
 if not ok then
-    print("Planery Not Available"..mod)
+	print("Planery Not Available"..mod)
 else
-    mod.reload_module("vd.", true)
+	mod.reload_module("vd.", true)
 end
 
 vim.o.number = true

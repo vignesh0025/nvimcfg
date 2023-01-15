@@ -298,7 +298,7 @@ local plugins = {
 		'glepnir/lspsaga.nvim',
 		branch = "main",
 		config = function ()
-			require("lspsaga")
+			require("lspsaga").setup({})
 		end
 	},
 
@@ -307,14 +307,19 @@ local plugins = {
 		config = function ()
 			local null_ls = require("null-ls")
 
+			local srcs = {
+				null_ls.builtins.code_actions.gitsigns,
+				null_ls.builtins.formatting.clang_format,
+				null_ls.builtins.diagnostics.cppcheck,
+			}
+
+			local addn_srcs = vconfig.get_addn_nulls_srcs()
+			if addn_srcs then
+				srcs = vim.tbl_extend("force",srcs, addn_srcs)
+			end
+
 			null_ls.setup({
-				sources = {
-					null_ls.builtins.code_actions.gitsigns,
-					null_ls.builtins.formatting.clang_format,
-					null_ls.builtins.diagnostics.cppcheck,
-					null_ls.builtins.diagnostics.luacheck,
-					null_ls.builtins.formatting.stylua
-				},
+				sources = srcs
 			})
 		end
 	},

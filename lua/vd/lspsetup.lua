@@ -111,6 +111,10 @@ local config_lspconfig = function()
 			},
 		},
 	})
+
+	if vconfig.plugin.rust_analyzer then
+		lspconfig.rust_analyzer.setup(setup_config)
+	end
 end
 
 local config_nvimcmp = function()

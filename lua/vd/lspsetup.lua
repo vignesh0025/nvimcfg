@@ -1,44 +1,23 @@
 local vconfig = require("config_enable")
 
-vim.g.kind_icons = {
-	Text = " ",
-	Method = " ",
-	Function = " ",
-	Constructor = " ",
-	Field = "ﰠ ",
-	Variable = " ",
-	Class = " ",
-	Interface = " ",
-	Module = " ",
-	Property = " ",
-	Unit = " ",
-	Value = " ",
-	Enum = " ",
-	Keyword = " ",
-	Snippet = "﬌",
-	Color = " ",
-	File = " ",
-	Reference = " ",
-	Folder = " ",
-	EnumMember = " ",
-	Constant = " ",
-	Struct = " ",
-	Event = "⌘ ",
-	Operator = " ",
-	TypeParameter = " ",
-}
-
 local opts = { noremap = true, silent = true }
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, opts)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
 
-if not vim.g.on_attach then
+local config_lspconfig = function()
+	if vconfig.plugin.mason_enabled then
+		require("mason").setup()
+		require("mason-lspconfig").setup()
+	end
+
+	local lspconfig = require("lspconfig")
+
 	-- Use an on_attach function to only map the following keys
 	-- after the language server attaches to the current buffer
 	-- function(client, bufnr)
-	vim.g.on_attach = function(client, bufnr)
+	local on_attach = function(client, bufnr)
 		-- Enable completion triggered by <c-x><c-o>
 
 		-- print(vim.inspect(client.name))
@@ -73,15 +52,6 @@ if not vim.g.on_attach then
 
 		vim.keymap.set("n", "gp", "<cmd>Lspsaga lsp_finder<cr>", bufopts)
 	end
-end
-
-local config_lspconfig = function()
-	if vconfig.plugin.mason_enabled then
-		require("mason").setup()
-		require("mason-lspconfig").setup()
-	end
-
-	local lspconfig = require("lspconfig")
 
 	local use_coq = false
 
@@ -95,13 +65,13 @@ local config_lspconfig = function()
 			vim.tbl_deep_extend("force", lsp_defaults.capabilities, require("cmp_nvim_lsp").default_capabilities())
 	end
 
-	local setup_config = ret and coq.lsp_ensure_capabilities({ on_attach = vim.g.on_attach })
-		or { on_attach = vim.g.on_attach }
+	local setup_config = ret and coq.lsp_ensure_capabilities({ on_attach = on_attach })
+		or { on_attach = on_attach }
 
 	lspconfig.pyright.setup(setup_config)
 	lspconfig.clangd.setup(setup_config)
 	lspconfig.sumneko_lua.setup({
-		on_attach = vim.g.on_attach,
+		on_attach = on_attach,
 		settings = {
 			Lua = {
 				runtime = { version = "LuaJIT" },
@@ -118,6 +88,34 @@ local config_lspconfig = function()
 end
 
 local config_nvimcmp = function()
+	local kind_icons = {
+		Text = " ",
+		Method = " ",
+		Function = " ",
+		Constructor = " ",
+		Field = "ﰠ ",
+		Variable = " ",
+		Class = " ",
+		Interface = " ",
+		Module = " ",
+		Property = " ",
+		Unit = " ",
+		Value = " ",
+		Enum = " ",
+		Keyword = " ",
+		Snippet = "﬌",
+		Color = " ",
+		File = " ",
+		Reference = " ",
+		Folder = " ",
+		EnumMember = " ",
+		Constant = " ",
+		Struct = " ",
+		Event = "⌘ ",
+		Operator = " ",
+		TypeParameter = " ",
+	}
+
 
 	local has_words_before = function()
 		unpack = unpack or table.unpack
@@ -146,8 +144,7 @@ local config_nvimcmp = function()
 		},
 		formatting = {
 			format = function(entry, vim_item)
-				-- vim_item.kind = string.format('%s %s', vim.g.kind_icons[vim_item.kind], vim_item.kind)
-				vim_item.kind = string.format("%s", vim.g.kind_icons[vim_item.kind])
+				vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
 
 				-- Source
 				vim_item.menu = ({
@@ -160,8 +157,8 @@ local config_nvimcmp = function()
 			end,
 		},
 		mapping = cmp.mapping.preset.insert({
-			-- ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-			-- ['<C-u>'] = cmp.mapping.scroll_docs(4),
+			['<C-d>'] = cmp.mapping.scroll_docs(-4),
+			['<C-u>'] = cmp.mapping.scroll_docs(4),
 			["<C-Space>"] = cmp.mapping.complete(),
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = false }),
@@ -190,6 +187,7 @@ local config_nvimcmp = function()
 		}),
 		sources = cmp.config.sources({
 			{ name = "nvim_lsp" },
+			{ name = "path" },
 			{ name = "luasnip" },
 		}, {
 			{ name = "buffer" },

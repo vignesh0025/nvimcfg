@@ -118,8 +118,19 @@ local config_lspconfig = function()
 end
 
 local config_nvimcmp = function()
-	-- Set up nvim-cmp.
+
+	local has_words_before = function()
+		unpack = unpack or table.unpack
+		local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+		return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+	end
+
 	local cmp = require("cmp")
+	local luasnip = require("luasnip")
+
+	vim.keymap.set("n", "<leader>se", function ()
+		require("luasnip.loaders").edit_snippet_files()
+	end, {})
 
 	vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
@@ -127,8 +138,7 @@ local config_nvimcmp = function()
 	cmp.setup({
 		snippet = {
 			expand = function(args)
-				-- vim.fn["vsnip#anonymous"](args.body)
-				vim.fn["UltiSnips#Anon"](args.body)
+				require('luasnip').lsp_expand(args.body)
 			end,
 		},
 		window = {
@@ -158,18 +168,21 @@ local config_nvimcmp = function()
 			["<Up>"] = cmp.mapping.select_prev_item(select_opts),
 			["<Down>"] = cmp.mapping.select_next_item(select_opts),
 			["<Tab>"] = cmp.mapping(function(fallback)
-				local col = vim.fn.col(".") - 1
 				if cmp.visible() then
 					cmp.select_next_item(select_opts)
-				elseif col == 0 or vim.fn.getline("."):sub(col, col):match("%s") then
-					fallback()
-				else
+				elseif luasnip.expand_or_jumpable() then
+					luasnip.expand_or_jump()
+				elseif has_words_before() then
 					cmp.complete()
+				else
+					fallback()
 				end
 			end, { "i", "s" }),
 			["<S-Tab>"] = cmp.mapping(function(fallback)
 				if cmp.visible() then
 					cmp.select_prev_item(select_opts)
+				elseif luasnip.jumpable(-1) then
+					luasnip.jump(-1)
 				else
 					fallback()
 				end
@@ -177,8 +190,7 @@ local config_nvimcmp = function()
 		}),
 		sources = cmp.config.sources({
 			{ name = "nvim_lsp" },
-			-- { name = 'vsnip' },
-			{ name = "ultisnips" },
+			{ name = "luasnip" },
 		}, {
 			{ name = "buffer" },
 		}),

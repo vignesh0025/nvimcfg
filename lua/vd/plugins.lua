@@ -16,7 +16,12 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
 
-	{ "EdenEast/nightfox.nvim", lazy = true },
+	{
+		"EdenEast/nightfox.nvim",
+		config = function ()
+			vim.cmd([[colorscheme terafox]])
+		end
+	},
 
 	'wellle/targets.vim', -- Nice Plugin to add more selection
 
@@ -231,9 +236,24 @@ local plugins = {
 			'hrsh7th/cmp-path',
 			'hrsh7th/cmp-cmdline',
 			'hrsh7th/cmp-nvim-lsp',
-			'SirVer/ultisnips',
-			'quangnguyen30192/cmp-nvim-ultisnips',
-			'honza/vim-snippets'
+			{
+				'L3MON4D3/LuaSnip',
+				dependencies = {'honza/vim-snippets'},
+				config = function()
+					-- Somewhere in your Neovim startup, e.g. init.lua
+					require("luasnip").config.set_config({ -- Setting LuaSnip config
+
+					-- Enable autotriggered snippets
+					enable_autosnippets = true,
+
+					-- Use Tab (or some other key if you prefer) to trigger visual selection
+					store_selection_keys = "<Tab>",
+				})
+					require("luasnip.loaders.from_snipmate").lazy_load() -- Loads 'Snippets' folder in RTP
+					require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/lua_snippets"}) -- Loads lua_snippets in cfg
+				end
+			},
+			'saadparwaiz1/cmp_luasnip'
 		},
 		config = require('vd.lspsetup').config_nvimcmp
 	},
@@ -258,7 +278,12 @@ local plugins = {
 	 {
 		"j-hui/fidget.nvim",
 		config = function()
-			require"fidget".setup{}
+			require"fidget".setup{
+				ui = {
+					-- currently only round theme
+					theme = 'moon',
+				}
+			}
 		end
 	},
 

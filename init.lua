@@ -4,6 +4,7 @@ vim.g.maplocalleader=[[\<space>]]
 --vim.lsp.set_log_level("debug")
 pcall(require, 'paths')
 
+require('globals')
 require('vd')
 
 local ok, mod = pcall(require, 'plenary.reload')
@@ -35,3 +36,4 @@ vim.opt.swapfile = false
 
 vim.keymap.set("x",'/','<Esc>/\\%V')
 vim.keymap.set("x", "<leader>p", "\"_dP")
+vim.keymap.set('i', "jk", "<esc>")

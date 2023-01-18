@@ -242,7 +242,15 @@ local plugins = {
 				config = function()
 					require("luasnip").config.set_config({
 					enable_autosnippets = true,
+					updateevents = "TextChanged,TextChangedI",
 					store_selection_keys = "<Tab>",
+					ext_opts = {
+						[require("luasnip.util.types").choiceNode] = {
+							active = {
+								virt_text = { { "●", "GruvboxOrange" } },
+							},
+						}
+					}
 				})
 				require("luasnip.loaders.from_snipmate").lazy_load() -- Loads 'Snippets' folder in RTP
 				require("luasnip.loaders.from_lua").lazy_load({paths = "~/.config/nvim/lua_snippets"}) -- Loads lua_snippets in cfg

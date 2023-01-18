@@ -130,6 +130,18 @@ local config_nvimcmp = function()
 		require("luasnip.loaders").edit_snippet_files()
 	end, {})
 
+	vim.keymap.set({"i", "s" }, "<C-j>", function ()
+		if luasnip.choice_active() then
+			luasnip.change_choice(1)
+		end
+	end, {})
+
+	vim.keymap.set({"i", "s" }, "<C-k>", function ()
+		if luasnip.choice_active() then
+			luasnip.change_choice(-1)
+		end
+	end, {})
+
 	vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 	local select_opts = { behavior = cmp.SelectBehavior.Select }

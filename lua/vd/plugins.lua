@@ -327,7 +327,11 @@ local plugins = {
 		'glepnir/lspsaga.nvim',
 		branch = "main",
 		config = function ()
-			require("lspsaga").setup({})
+			require("lspsaga").setup({
+				lightbulb = {
+					enable = false
+				},
+			})
 		end
 	},
 
@@ -351,6 +355,20 @@ local plugins = {
 				sources = srcs
 			})
 		end
+	},
+
+	{
+		'folke/zen-mode.nvim',
+		config = function()
+			require('zen-mode').setup()
+		end,
+		 keys = {
+			 { "<leader>z", "<cmd>ZenMode<cr>", desc = "NeoTree" },
+		 },
+		dependencies = {
+			{ 'folke/twilight.nvim', config = function() require('twilight').setup() end }
+		},
+		cmd = 'ZenMode'
 	},
 }
 

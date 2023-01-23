@@ -26,7 +26,7 @@ local parse = require("luasnip.util.parser").parse_snippet
 
 return {
   -- Example: how to set snippet parameters
-  require("luasnip").snippet(
+  s(
     { -- Table 1: snippet parameters
       trig="hi",
       dscr="An autotriggering snippet that expands 'hi' into 'Hello, world!'",
@@ -40,17 +40,16 @@ return {
     -- Table 3, the advanced snippet options, is left blank.
   ),
 
-  s(
-  {
+  s({
 	  trig="h1",
 	  dscr="This is my description"
-  },
-  {
+  },{
 	  t("Hahaha")
-  }
-  ),
+  }),
 
-  s("sam", fmt([[
+  s({
+	  trig="sam"
+  },fmt([[
   local func = function()
 	  {}
   end]],

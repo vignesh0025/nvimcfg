@@ -125,6 +125,7 @@ local config_nvimcmp = function()
 
 	local cmp = require("cmp")
 	local luasnip = require("luasnip")
+	local lspkind = require('lspkind') --Icons for LSP
 
 	vim.keymap.set("n", "<leader>se", function ()
 		require("luasnip.loaders").edit_snippet_files()
@@ -155,18 +156,19 @@ local config_nvimcmp = function()
 			documentation = cmp.config.window.bordered(),
 		},
 		formatting = {
-			format = function(entry, vim_item)
-				vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
+			format = lspkind.cmp_format({
+				before = function (entry,  vim_item)
+					-- vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
 
-				-- Source
-				vim_item.menu = ({
-					buffer = "[Buffer]",
-					nvim_lsp = "[LSP]",
-					luasnip = "[LuaSnip]",
-					nvim_lua = "[Lua]",
-				})[entry.source.name]
-				return vim_item
-			end,
+					-- vim_item.menu = ({
+					-- 	buffer = "[Buffer]",
+					-- 	nvim_lsp = "[LSP]",
+					-- 	luasnip = "[LuaSnip]",
+					-- 	nvim_lua = "[Lua]",
+					-- })[entry.source.name]
+					return vim_item
+				end
+			})
 		},
 		mapping = cmp.mapping.preset.insert({
 			['<C-d>'] = cmp.mapping.scroll_docs(-4),

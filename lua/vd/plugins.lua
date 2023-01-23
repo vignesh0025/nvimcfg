@@ -232,6 +232,7 @@ local plugins = {
 	 { 'hrsh7th/nvim-cmp',
 		event = 'InsertEnter',
 		dependencies = {
+			'onsails/lspkind.nvim',
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-path',
 			'hrsh7th/cmp-cmdline',

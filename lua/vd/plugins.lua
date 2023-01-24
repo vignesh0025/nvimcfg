@@ -191,11 +191,9 @@ local plugins = {
 		build = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
 		config = function()
 			require'nvim-treesitter.configs'.setup {
-				-- A list of parser names, or "all"
-				ensure_installed = { "c", "lua", "python", "cpp" },
+				ensure_installed = { "c", "lua", "python", "cpp", "vim" },
 				sync_install = false,
 				highlight = {
-					-- `false` will disable the whole extension
 					enable = true,
 				},
 				fold = {

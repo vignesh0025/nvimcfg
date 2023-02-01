@@ -1,4 +1,6 @@
-local telescope_keymaps = function()
+local M = {}
+
+M.telescope_keymaps = function()
 	local builtin = require('telescope.builtin')
 
 	vim.keymap.set('n', '<c-p>h', builtin.help_tags, {})
@@ -42,7 +44,7 @@ local telescope_keymaps = function()
 	end)
 end
 
-local tmux_keymaps = function ()
+M.tmux_keymaps = function ()
 	vim.keymap.set('n', '<m-j>', require("tmux").move_bottom, {})
 	vim.keymap.set('n', '<m-h>', require("tmux").move_left, {})
 	vim.keymap.set('n', '<m-k>', require("tmux").move_top, {})
@@ -54,7 +56,7 @@ local tmux_keymaps = function ()
 	vim.keymap.set('n', '<m-Right>', require("tmux").move_right, {})
 end
 
-local lazy_keymaps = function ()
+M.lazy_keymaps = function ()
 
 	local set_term_cmd_keymap = function (key, cmd, close_on_exit)
 		vim.keymap.set('n',key, function ()
@@ -75,8 +77,4 @@ local lazy_keymaps = function ()
 
 end
 
-return {
-	telescope_keymaps = telescope_keymaps,
-	tmux_keymaps = tmux_keymaps,
-	lazy_keymaps = lazy_keymaps
-}
+return M

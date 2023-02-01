@@ -1,6 +1,8 @@
 local autocmd = vim.api.nvim_create_autocmd
 
-local setup = function()
+local M = {}
+
+M.setup = function()
 
 -- Clears the group if present
 local filetype_group = vim.api.nvim_create_augroup("FileTypeGroup", {clear = false})
@@ -52,7 +54,7 @@ end
 --   end
 -- })
 
-local au_session = function ()
+M.au_session = function ()
 	local session_grp = vim.api.nvim_create_augroup("SessionGrp", {clear = true})
 	autocmd('VimEnter', {
 		desc = 'Source .session file if it exists',
@@ -68,7 +70,14 @@ local au_session = function ()
 	})
 end
 
-return {
-	setup = setup,
-	au_session = au_session,
-}
+M.setup_commands =  function ()
+	vim.api.nvim_create_user_command('VDDisableDiagnostics', function ()
+		vim.diagnostic.disable()
+	end, {})
+
+	vim.api.nvim_create_user_command('VDEnableDiagnostics', function ()
+		vim.diagnostic.enable()
+	end, {})
+end
+
+return M

@@ -143,6 +143,12 @@ local config_nvimcmp = function()
 		end
 	end, {})
 
+	vim.keymap.set({"i", "s" }, "<C-l>", function ()
+		if luasnip.choice_active() then
+			luasnip.change_choice(-1)
+		end
+	end, {noremap=true,})
+
 	vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 	local select_opts = { behavior = cmp.SelectBehavior.Select }
@@ -181,7 +187,7 @@ local config_nvimcmp = function()
 			["<Tab>"] = cmp.mapping(function(fallback)
 				if cmp.visible() then
 					cmp.select_next_item(select_opts)
-				elseif luasnip.expand_or_jumpable() then
+				elseif luasnip.expand_or_locally_jumpable() then
 					luasnip.expand_or_jump()
 				elseif has_words_before() then
 					cmp.complete()
@@ -192,7 +198,7 @@ local config_nvimcmp = function()
 			["<S-Tab>"] = cmp.mapping(function(fallback)
 				if cmp.visible() then
 					cmp.select_prev_item(select_opts)
-				elseif luasnip.jumpable(-1) then
+				elseif luasnip.locally_jumpable(-1) then
 					luasnip.jump(-1)
 				else
 					fallback()
@@ -201,9 +207,11 @@ local config_nvimcmp = function()
 		}),
 		sources = cmp.config.sources({
 			{ name = "nvim_lsp" },
-			{ name = "path" },
 			{ name = "luasnip" },
-		}, {
+		},{
+			{ name = "path" },
+		},
+		{
 			{ name = "buffer" },
 		}),
 	})

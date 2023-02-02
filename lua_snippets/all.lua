@@ -28,7 +28,7 @@ return {
   -- Example: how to set snippet parameters
   s(
     { -- Table 1: snippet parameters
-      trig="hi",
+      trig="held",
       dscr="An autotriggering snippet that expands 'hi' into 'Hello, world!'",
       regTrig=false,
       priority=100,

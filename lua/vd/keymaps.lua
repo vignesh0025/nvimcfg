@@ -77,4 +77,8 @@ M.lazy_keymaps = function ()
 
 end
 
+M.general_keymaps = function ()
+	vim.keymap.set("n", ",k", vim.diagnostic.open_float, {})
+end
+
 return M

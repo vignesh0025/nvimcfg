@@ -69,7 +69,12 @@ local config_lspconfig = function()
 		or { on_attach = on_attach }
 
 	lspconfig.pyright.setup(setup_config)
-	lspconfig.clangd.setup(setup_config)
+	lspconfig.clangd.setup(vim.tbl_deep_extend("force", setup_config, {
+		cmd = {
+			"clangd",
+			"--header-insertion=never"
+		}
+	}))
 	lspconfig.sumneko_lua.setup({
 		on_attach = on_attach,
 		settings = {
@@ -78,6 +83,7 @@ local config_lspconfig = function()
 				diagnostics = { globals = { "vim" } },
 				workspace = { library = vim.api.nvim_get_runtime_file("", true) },
 				telemetry = { enable = false },
+				checkThirdParty = false
 			},
 		},
 	})

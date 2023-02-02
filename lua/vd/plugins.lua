@@ -237,6 +237,7 @@ local plugins = {
 			'hrsh7th/cmp-nvim-lsp',
 			{
 				'L3MON4D3/LuaSnip',
+				version = "v1.*",
 				dependencies = {'honza/vim-snippets'},
 				config = function()
 					require("luasnip").config.set_config({

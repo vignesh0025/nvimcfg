@@ -71,13 +71,28 @@ local plugins = {
 
 	-- you can use the VeryLazy event for things that can
 	-- load later and are not important for the initial UI
-	{ "stevearc/dressing.nvim", event = "VeryLazy" },
+	{
+		"stevearc/dressing.nvim",
+		lazy = true,
+		init = function()
+			---@diagnostic disable-next-line: duplicate-set-field
+			vim.ui.select = function(...)
+				require("lazy").load({ plugins = { "dressing.nvim" } })
+				return vim.ui.select(...)
+			end
+			---@diagnostic disable-next-line: duplicate-set-field
+			vim.ui.input = function(...)
+				require("lazy").load({ plugins = { "dressing.nvim" } })
+				return vim.ui.input(...)
+			end
+		end,
+	},
 
-	 {
+	{
 		"nvim-telescope/telescope.nvim",
 		branch = "0.1.x",
 		dependencies = {
-			{"nvim-lua/plenary.nvim"},
+			{"nvim-lua/plenary.nvim", lazy=true},
 			{ "nvim-telescope/telescope-file-browser.nvim" },
 			-- {'nvim-telescope/telescope-ui-select.nvim'},
 			{'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
@@ -175,22 +190,21 @@ local plugins = {
 
 	 {
 		'akinsho/bufferline.nvim',
+		event = "VeryLazy",
 		tag = "v3.0.0",
 		dependencies = 'kyazdani42/nvim-web-devicons',
-		config = function()
-			vim.opt.termguicolors = true
-			require("bufferline").setup{
-				options = {
-					numbers = "ordinal",
-					diagnostics = "nvim_lsp"
-					}
-				}
-		end
+		opts = {
+			-- Options are passed as require('bufferline').setup(opts)
+			options = {
+				numbers = "ordinal",
+				diagnostics = "nvim_lsp"
+			}
+		}
 	},
 
 	 {
 		'nvim-treesitter/nvim-treesitter',
-		event = 'BufRead',
+		event = 'BufReadPost',
 		build = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
 		config = function()
 			require'nvim-treesitter.configs'.setup {

@@ -145,6 +145,7 @@ local plugins = {
 	 {
 		'lewis6991/gitsigns.nvim',
 		tag = 'release',
+		event = 'VeryLazy',
 		config = function()
 			require('gitsigns').setup()
 		end
@@ -159,6 +160,9 @@ local plugins = {
 			    vim.g.loaded = 1
 			    vim.g.loaded_netrwPlugin = 1
 		end,
+		keys = {
+			{"<C-n>", "<Cmd>NvimTreeToggle<CR>", desc = "NeoTree"}
+		},
 		config = function()
 			require("nvim-tree").setup{
 				view = {
@@ -166,7 +170,6 @@ local plugins = {
 					side = "right",
 				}
 			}
-			vim.keymap.set("n","<C-n>","<Cmd>NvimTreeToggle<CR>", {})
 		end
 	},
 
@@ -362,8 +365,8 @@ local plugins = {
 		config = function()
 			require('zen-mode').setup()
 		end,
-		 keys = {
-			 { "<leader>z", "<cmd>ZenMode<cr>", desc = "NeoTree" },
+		keys = {
+			 { "<leader>z", "<cmd>ZenMode<cr>", desc = "ZenMode" },
 		 },
 		dependencies = {
 			{ 'folke/twilight.nvim', config = function() require('twilight').setup() end }

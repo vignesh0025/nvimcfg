@@ -35,7 +35,7 @@ local plugins = {
 		end,
 	},
 
-	 { "folke/tokyonight.nvim",
+	{ "folke/tokyonight.nvim",
 		enabled = false,
 		config = function()
 			require("tokyonight").setup({
@@ -46,9 +46,7 @@ local plugins = {
 		end
 	},
 
-	 -- {'kyazdani42/nvim-web-devicons'}
-
-	 {
+	{
 		'nvim-lualine/lualine.nvim',
 		dependencies = { 'kyazdani42/nvim-web-devicons'},
 		config = function()
@@ -106,7 +104,19 @@ local plugins = {
 						local tutils = require("telescope.utils")
 						local tail = tutils.path_tail(path)
 						local head = vim.fn.fnamemodify(path, ":~:h")
-						head = (head == '.') and '' or '('..head..')'
+						-- head = (head == '.') and '' or '('..head..')'
+						if head == '.' then
+							head = ''
+						else
+							local get_status = require('telescope.state').get_status
+							local status = get_status(vim.api.nvim_get_current_buf())
+							local len = vim.api.nvim_win_get_width(status.results_win) - string.len(tail) - 7
+							head = require('plenary.strings').truncate(head, len, nil, -1)
+							head = '('..head..')'
+							if string.sub(head,1,1) == '/' then
+								head = head..'/'
+							end
+						end
 						return string.format("%s %s", tail, head)
 					end,
 					mappings = {
@@ -130,6 +140,21 @@ local plugins = {
 			require("telescope").load_extension("live_grep_args")
 			require('vd.keymaps').telescope_keymaps()
 		end
+	},
+
+	{
+		'ThePrimeagen/harpoon',
+		config = function()
+			require('telescope').load_extension('harpoon')
+		end,
+		dependencies = { {'ThePrimeagen/harpoon', lazy=true} },
+		keys = {
+			{ ",ae", function ()
+				vim.cmd("lua require('harpoon.mark').add_file()")
+				vim.notify("Harpooned")
+			end, desc = "Add Harpoon Mark" },
+			{ ",e", "<cmd>Telescope harpoon marks<cr>", desc = "Show Harpoon Marks" },
+		},
 	},
 
 	 "tpope/vim-commentary",
@@ -157,7 +182,7 @@ local plugins = {
 		end
 	},
 
-	 {
+	{
 		'lewis6991/gitsigns.nvim',
 		tag = 'release',
 		event = 'VeryLazy',
@@ -166,7 +191,7 @@ local plugins = {
 		end
 	},
 
-	 {
+	{
 		'kyazdani42/nvim-tree.lua',
 		dependencies = {
 			'kyazdani42/nvim-web-devicons', -- optional, for file icons
@@ -188,7 +213,7 @@ local plugins = {
 		end
 	},
 
-	 {
+	{
 		'akinsho/bufferline.nvim',
 		event = "VeryLazy",
 		tag = "v3.0.0",
@@ -202,7 +227,7 @@ local plugins = {
 		}
 	},
 
-	 {
+	{
 		'nvim-treesitter/nvim-treesitter',
 		event = 'BufReadPost',
 		build = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
@@ -220,7 +245,8 @@ local plugins = {
 			}
 		end
 	},
-	 { "nvim-treesitter/nvim-treesitter-textobjects",
+
+	{ "nvim-treesitter/nvim-treesitter-textobjects",
 		event = 'BufRead',
 		config = function ()
 		require('nvim-treesitter.configs').setup({
@@ -243,8 +269,9 @@ local plugins = {
 		enabled = vconfig.plugin.neodev_enabled
 	},
 
-	 { "ms-jpq/coq_nvim", enabled = false, setup = require('vd.lspsetup').setup_coq },
-	 { 'hrsh7th/nvim-cmp',
+	{ "ms-jpq/coq_nvim", enabled = false, setup = require('vd.lspsetup').setup_coq },
+
+	{ 'hrsh7th/nvim-cmp',
 		event = 'InsertEnter',
 		dependencies = {
 			'onsails/lspkind.nvim',
@@ -260,6 +287,7 @@ local plugins = {
 					require("luasnip").config.set_config({
 					enable_autosnippets = true,
 					updateevents = "TextChanged,TextChangedI",
+					delete_check_events = "TextChanged",
 					store_selection_keys = "<Tab>",
 					ext_opts = {
 						[require("luasnip.util.types").choiceNode] = {
@@ -295,7 +323,7 @@ local plugins = {
 		end,
 	},
 
-	 {
+	{
 		"j-hui/fidget.nvim",
 		config = function()
 			require"fidget".setup{
@@ -312,7 +340,7 @@ local plugins = {
 	-- SessionLoad
 	-- SessionSave
 	-- SessionStop
-	 {'natecraddock/sessions.nvim', config = function ()
+	{'natecraddock/sessions.nvim', config = function ()
 		require("sessions").setup({
 			session_filepath = "./.session",
 		})
@@ -321,7 +349,7 @@ local plugins = {
 	end},
 
 
-	 {'dstein64/vim-startuptime', enabled=false},
+	{'dstein64/vim-startuptime', enabled=false},
 
 	-- TODO: Resize support
 	{
@@ -348,6 +376,10 @@ local plugins = {
 				lightbulb = {
 					enable = false
 				},
+				scroll_preview = {
+					scroll_down = "<C-d>",
+					scroll_up = "<C-u>"
+				}
 			})
 		end
 	},
@@ -387,6 +419,8 @@ local plugins = {
 		},
 		cmd = 'ZenMode'
 	},
+
+
 }
 
 local opt = {

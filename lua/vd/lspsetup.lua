@@ -50,7 +50,6 @@ local config_lspconfig = function()
 			vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
 		end
 
-		vim.keymap.set("n", "gp", "<cmd>Lspsaga lsp_finder<cr>", bufopts)
 	end
 
 	local use_coq = false

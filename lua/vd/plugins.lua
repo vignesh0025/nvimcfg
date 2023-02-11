@@ -87,6 +87,14 @@ local plugins = {
 	},
 
 	{
+		"rcarriga/nvim-notify",
+		event = "VeryLazy",
+		config = function ()
+			vim.notify = require("notify")
+		end
+	},
+
+	{
 		"nvim-telescope/telescope.nvim",
 		branch = "0.1.x",
 		dependencies = {
@@ -233,7 +241,7 @@ local plugins = {
 		build = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
 		config = function()
 			require'nvim-treesitter.configs'.setup {
-				ensure_installed = { "c", "lua", "python", "cpp", "vim" },
+				ensure_installed = { "c", "lua", "python", "cpp", "vim", "markdown", "markdown_inline" },
 				sync_install = false,
 				highlight = {
 					enable = true,
@@ -371,6 +379,7 @@ local plugins = {
 	{
 		'glepnir/lspsaga.nvim',
 		branch = "main",
+		event = "BufRead",
 		config = function ()
 			require("lspsaga").setup({
 				lightbulb = {
@@ -381,7 +390,13 @@ local plugins = {
 					scroll_up = "<C-u>"
 				}
 			})
-		end
+		end,
+		keys =  {
+			{",gr", "<cmd>Lspsaga lsp_finder<cr>", desc = "Saga lsp_finder"},
+			{",go", "<cmd>Lspsaga outline<cr>", desc = "Saga outline"},
+			{",gk", "<cmd>Lspsaga hover_doc<cr>", desc = "Saga hover"}
+		},
+		dependencies = { 'kyazdani42/nvim-web-devicons'},
 	},
 
 	{

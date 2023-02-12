@@ -18,8 +18,16 @@ local plugins = {
 
 	{
 		"EdenEast/nightfox.nvim",
+		enabled = false,
 		config = function ()
 			vim.cmd([[colorscheme terafox]])
+		end
+	},
+
+	{
+		"nyoom-engineering/oxocarbon.nvim",
+		config = function ()
+			vim.cmd([[colorscheme oxocarbon]])
 		end
 	},
 

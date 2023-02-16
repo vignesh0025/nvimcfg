@@ -56,6 +56,7 @@ local plugins = {
 
 	{
 		'nvim-lualine/lualine.nvim',
+		event = "VeryLazy",
 		dependencies = { 'kyazdani42/nvim-web-devicons'},
 		config = function()
 			require('lualine').setup{
@@ -189,6 +190,7 @@ local plugins = {
 
 	{
 		"sindrets/diffview.nvim",
+		event = "VeryLazy",
 		config = function ()
 			if vconfig.plugin.diffview_config then
 				require("diffview").setup(vconfig.plugin.diffview_config)
@@ -370,6 +372,7 @@ local plugins = {
 	-- TODO: Resize support
 	{
 		"aserowy/tmux.nvim",
+		event = "VeryLazy",
 		config = function ()
 			require("tmux").setup{
 				navigation = {

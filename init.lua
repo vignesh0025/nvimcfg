@@ -17,9 +17,6 @@ vim.o.number = true
 vim.o.signcolumn = "yes" -- always have signcolumn so text doesn't move right
 vim.o.colorcolumn = "120"
 vim.o.hidden = true
-vim.o.tabstop = 4
-vim.o.shiftwidth = 4
-vim.o.softtabstop = 4
 vim.o.showbreak = "↪"
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -27,7 +24,14 @@ vim.o.smartindent = true
 vim.o.list = true
 vim.o.shiftround = true
 vim.o.scrolloff = 3
+
+-- Tab options
+vim.o.tabstop = 4
+vim.o.shiftwidth = 4
+vim.o.softtabstop = 4
 -- set expandtab
+-- :retab changes tab to space if expandtab is set or vice versa
+
 -- filetype plugin indent on
 vim.opt.isfname:append({'{', '}'})
 vim.opt.isfname:remove({'='})

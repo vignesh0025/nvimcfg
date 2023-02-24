@@ -97,6 +97,7 @@ local plugins = {
 
 	{
 		"rcarriga/nvim-notify",
+		enabled = false,
 		event = "VeryLazy",
 		config = function ()
 			vim.notify = require("notify")
@@ -114,8 +115,18 @@ local plugins = {
 			{ "nvim-telescope/telescope-live-grep-args.nvim" },
 		},
 		config = function()
+			local telescopeConfig = require("telescope.config")
+
+			local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
+
+			table.insert(vimgrep_arguments, "--hidden")
+			table.insert(vimgrep_arguments, "--glob")
+			table.insert(vimgrep_arguments, "!**/.git/*")
+			table.insert(vimgrep_arguments, "-L")
+
 			require('telescope').setup{
 				defaults = {
+					vimgrep_arguments = vimgrep_arguments,
 					winblend = 20,
 					path_display = function(_, path)
 						local tutils = require("telescope.utils")
@@ -142,12 +153,18 @@ local plugins = {
 						},
 					}
 				},
+				pickers = {
+					find_files = {
+						find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*", "-L" },
+					},
+				},
 				extensions = {
 					["ui-select"] = {
 						require("telescope.themes").get_dropdown {}
 					},
 					["file_browser"] = {
-						depth = 1
+						depth = 1,
+						display_stat = false
 					}
 				}
 			}
@@ -234,7 +251,7 @@ local plugins = {
 	{
 		'akinsho/bufferline.nvim',
 		event = "VeryLazy",
-		tag = "v3.0.0",
+		tag = "v3.3.0",
 		dependencies = 'kyazdani42/nvim-web-devicons',
 		opts = {
 			-- Options are passed as require('bufferline').setup(opts)

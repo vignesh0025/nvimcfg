@@ -256,6 +256,7 @@ local plugins = {
 		opts = {
 			-- Options are passed as require('bufferline').setup(opts)
 			options = {
+				separator_style = "slant",
 				numbers = "ordinal",
 				diagnostics = "nvim_lsp"
 			}

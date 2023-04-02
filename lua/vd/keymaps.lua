@@ -33,7 +33,7 @@ M.telescope_keymaps = function()
 	vim.keymap.set('n', '<c-Bslash>', extensions.live_grep_args.live_grep_args, {})
 
 	vim.keymap.set('n', '<leader>f',extensions.file_browser.file_browser, {})
-	vim.keymap.set('n', '<leader>.', function() extensions.file_browser.file_browser{path="%:p:h"} end, {})
+	vim.keymap.set('n', '<leader>.', function() extensions.file_browser.file_browser{path="%:p:h", select_buffer=true} end, {})
 	vim.keymap.set('n', '<leader>/', extensions.live_grep_args.live_grep_args, {})
 
 	local bufopts = { noremap=true, silent=true}

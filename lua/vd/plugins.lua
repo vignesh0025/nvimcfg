@@ -35,7 +35,8 @@ local plugins = {
 
 	'tpope/vim-unimpaired',
 
-	{ "ellisonleao/gruvbox.nvim",
+	{
+		"ellisonleao/gruvbox.nvim",
 		enabled = false,
 		config = function()
 			vim.o.background = "dark"
@@ -43,7 +44,8 @@ local plugins = {
 		end,
 	},
 
-	{ "folke/tokyonight.nvim",
+	{
+		"folke/tokyonight.nvim",
 		enabled = false,
 		config = function()
 			require("tokyonight").setup({
@@ -464,6 +466,14 @@ local plugins = {
 		cmd = 'ZenMode'
 	},
 
+	{
+		'lukas-reineke/indent-blankline.nvim',
+		config = function ()
+			require("indent_blankline").setup {
+				show_end_of_line = true,
+			}
+		end
+	},
 
 }
 

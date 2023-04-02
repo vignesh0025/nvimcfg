@@ -41,7 +41,7 @@ vim.opt.joinspaces = false
 -- filetype plugin indent on
 vim.opt.isfname:append({'{', '}'})
 vim.opt.isfname:remove({'='})
-vim.opt.listchars:append({trail="~", tab = "▸─", extends = "»", precedes = "«", nbsp = "␣", eol = "↴"})
+vim.opt.listchars:append({trail="~", tab = "─.", extends = "»", precedes = "«", nbsp = "␣", eol = "↴"})
 vim.opt.swapfile = false
 
 vim.keymap.set("x",'/','<Esc>/\\%V')

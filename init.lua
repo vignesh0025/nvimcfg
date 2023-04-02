@@ -18,8 +18,6 @@ vim.o.signcolumn = "yes" -- always have signcolumn so text doesn't move right
 vim.o.colorcolumn = "120"
 vim.o.hidden = true
 vim.o.showbreak = "↪"
-vim.o.ignorecase = true
-vim.o.smartcase = true
 vim.o.smartindent = true
 vim.o.list = true
 vim.o.shiftround = true
@@ -32,10 +30,18 @@ vim.o.softtabstop = 4
 -- set expandtab
 -- :retab changes tab to space if expandtab is set or vice versa
 
+-- Search
+vim.o.ignorecase = true
+vim.o.smartcase = true
+vim.opt.grepprg = 'rg --vimgrep'
+vim.opt.grepformat = '%f:%l:%c:%m:%f:%l:%m'
+
+vim.opt.joinspaces = false
+
 -- filetype plugin indent on
 vim.opt.isfname:append({'{', '}'})
 vim.opt.isfname:remove({'='})
-vim.opt.listchars:append({trail="~"})
+vim.opt.listchars:append({trail="~", tab = "▸─", extends = "»", precedes = "«", nbsp = "␣", eol = "↴"})
 vim.opt.swapfile = false
 
 vim.keymap.set("x",'/','<Esc>/\\%V')

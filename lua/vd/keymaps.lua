@@ -81,4 +81,10 @@ M.general_keymaps = function ()
 	vim.keymap.set("n", ",k", vim.diagnostic.open_float, {})
 end
 
+M.gitsigns_keymaps = function ()
+	vim.keymap.set("n", ",gn", ":Gitsigns next_hunk<CR>", {})
+	vim.keymap.set("n", ",gp", ":Gitsigns prev_hunk<CR>", {})
+	vim.keymap.set("n", ",gd", ":Gitsigns reset_hunk<CR>", {})
+end
+
 return M

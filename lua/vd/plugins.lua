@@ -16,18 +16,28 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
 
+	{ "catppuccin/nvim", name = "catppuccin" },
+
 	{
-		"EdenEast/nightfox.nvim",
-		enabled = false,
+		"rebelot/kanagawa.nvim",
+		lazy = false,
+		priority = 1000,
 		config = function ()
-			vim.cmd([[colorscheme terafox]])
+			vim.api.nvim_create_autocmd({'ColorScheme'}, {
+				callback = function ()
+					vim.api.nvim_set_hl(0, '@lsp.type.comment', {link="@Comment"})
+				end
+			})
+			vim.cmd("colorscheme kanagawa")
 		end
 	},
 
 	{
-		"nyoom-engineering/oxocarbon.nvim",
+		'lukas-reineke/indent-blankline.nvim',
 		config = function ()
-			vim.cmd([[colorscheme oxocarbon]])
+			require("indent_blankline").setup {
+				show_end_of_line = true,
+			}
 		end
 	},
 
@@ -62,6 +72,7 @@ local plugins = {
 		dependencies = { 'kyazdani42/nvim-web-devicons'},
 		config = function()
 			require('lualine').setup{
+				extensions = {'quickfix'},
 				options =  {
 					globalstatus = true,
 				},
@@ -193,7 +204,12 @@ local plugins = {
 		},
 	},
 
-	 "tpope/vim-commentary",
+	{
+		"numToStr/Comment.nvim",
+		config = function ()
+			require('Comment').setup()
+		end
+	},
 
 	 "tpope/vim-surround",
 
@@ -225,6 +241,7 @@ local plugins = {
 		event = 'VeryLazy',
 		config = function()
 			require('gitsigns').setup()
+			require('vd.keymaps').gitsigns_keymaps()
 		end
 	},
 
@@ -271,7 +288,7 @@ local plugins = {
 		build = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
 		config = function()
 			require'nvim-treesitter.configs'.setup {
-				ensure_installed = { "c", "lua", "python", "cpp", "vim", "markdown", "markdown_inline" },
+				ensure_installed = { "c", "lua", "python", "cpp", "vim", "markdown", "vimdoc", "markdown_inline" },
 				sync_install = false,
 				highlight = {
 					enable = true,
@@ -466,12 +483,12 @@ local plugins = {
 		cmd = 'ZenMode'
 	},
 
+
+
 	{
-		'lukas-reineke/indent-blankline.nvim',
+		"luukvbaal/statuscol.nvim",
 		config = function ()
-			require("indent_blankline").setup {
-				show_end_of_line = true,
-			}
+			require('statuscol').setup()
 		end
 	},
 

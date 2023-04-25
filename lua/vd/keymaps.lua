@@ -110,7 +110,7 @@ M.lazy_keymaps = function ()
 			enter = true,
 		}, term_opts or {})
 		vim.keymap.set('n',key, function ()
-			require("lazy.util").float_term(cmd, term_opts)
+			require("lazy.util").float_term(cmd, _opts)
 		end, {})
 	end
 

@@ -23,9 +23,27 @@ local plugins = {
 		lazy = false,
 		priority = 1000,
 		config = function ()
+			local dim_color = function (c, alpha)
+				local b = math.floor((bit.band(c, 0xFF)) * alpha)
+				local g = math.floor((bit.band(bit.rshift(c, 8), 0xFF)) * alpha)
+				local r = math.floor((bit.band(bit.rshift(c, 16), 0xFF)) * alpha)
+
+				return bit.bor(bit.lshift(r, 16), bit.lshift(g, 8), b)
+			end
+
+			local dim_virtual_text = function (prev, current)
+				local diag_hint_color = vim.api.nvim_get_hl(0, {name = prev})
+				local color = dim_color(diag_hint_color.fg, 0.70)
+				vim.api.nvim_set_hl(0, current, {fg=color})
+			end
+
 			vim.api.nvim_create_autocmd({'ColorScheme'}, {
 				callback = function ()
 					vim.api.nvim_set_hl(0, '@lsp.type.comment', {link="@Comment"})
+					dim_virtual_text("DiagnosticWarn", "DiagnosticVirtualTextWarn")
+					dim_virtual_text("DiagnosticInfo", "DiagnosticVirtualTextInfo")
+					dim_virtual_text("DiagnosticError", "DiagnosticVirtualTextError")
+					dim_virtual_text("DiagnosticHint", "DiagnosticVirtualTextHint")
 				end
 			})
 			vim.cmd("colorscheme kanagawa")
@@ -226,12 +244,27 @@ local plugins = {
 	{
 		"sindrets/diffview.nvim",
 		event = "VeryLazy",
+		keys = {
+			{",go", "<cmd>DiffviewOpen<CR>", desc = "Open diffview"}
+		},
 		config = function ()
-			if vconfig.plugin.diffview_config then
-				require("diffview").setup(vconfig.plugin.diffview_config)
-			else
-				require("diffview").setup()
-			end
+			local actions = require("diffview.actions")
+			local config = {
+				keymaps = {
+					view = {
+						{"n", "<c-u>", actions.scroll_view(-0.25), {desc = "Scroll the view up"}},
+						{"n", "<c-d>", actions.scroll_view(0.25), {desc = "Scroll the view down"}},
+						{"n", ",t", actions.toggle_files, {desc = "Toggle the file panel"}}
+					},
+					file_panel = {
+						{"n", "<c-u>", actions.scroll_view(-0.25), {desc = "Scroll the view up"}},
+						{"n", "<c-d>", actions.scroll_view(0.25), {desc = "Scroll the view down"}},
+						{"n", ",t", actions.toggle_files, {desc = "Toggle the file panel"}}
+					}
+				}
+			}
+			local c = vim.tbl_deep_extend("force", config, vconfig.plugin.diffview_config)
+			require("diffview").setup(c)
 		end
 	},
 
@@ -440,9 +473,9 @@ local plugins = {
 			})
 		end,
 		keys =  {
-			{",gr", "<cmd>Lspsaga lsp_finder<cr>", desc = "Saga lsp_finder"},
-			{",go", "<cmd>Lspsaga outline<cr>", desc = "Saga outline"},
-			{",gk", "<cmd>Lspsaga hover_doc<cr>", desc = "Saga hover"}
+			{",lr", "<cmd>Lspsaga lsp_finder<cr>", desc = "Saga lsp_finder"},
+			{",lo", "<cmd>Lspsaga outline<cr>", desc = "Saga outline"},
+			{",lk", "<cmd>Lspsaga hover_doc<cr>", desc = "Saga hover"}
 		},
 		dependencies = { 'kyazdani42/nvim-web-devicons'},
 	},

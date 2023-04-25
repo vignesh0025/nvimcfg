@@ -1,16 +1,22 @@
 local M = {}
 
+local map = function (mode, lhs, rhs, opts)
+  local keys = require("lazy.core.handler").handlers.keys
+  ---@cast keys LazyKeysHandler
+  -- do not create the keymap if a lazy keys handler exists
+  if not keys.active[keys.parse({ lhs, mode = mode }).id] then
+    opts = opts or {}
+    opts.silent = opts.silent ~= false
+    vim.keymap.set(mode, lhs, rhs, opts)
+  end
+end
+
+local has = function (plugin)
+  return require("lazy.core.config").plugins[plugin] ~= nil
+end
+
 M.telescope_keymaps = function()
 	local builtin = require('telescope.builtin')
-
-	vim.keymap.set('n', '<c-p>h', builtin.help_tags, {})
-	vim.keymap.set('n', '<c-p><c-p>', function() builtin.find_files{follow=true} end, {})
-	vim.keymap.set('n', '<c-p>r', builtin.oldfiles, {})
-	vim.keymap.set('n', '<c-p>b', builtin.buffers, {})
-	vim.keymap.set('n', '<c-p>o', builtin.lsp_document_symbols, {})
-	vim.keymap.set('n', '<c-p>g', builtin.grep_string, {})
-	vim.keymap.set('n', '<c-p>d', function() builtin.diagnostics{bufnr=0} end, {})
-	vim.keymap.set('n', '<c-p>t', builtin.colorscheme)
 
 --	Leader based Keymaps
 	vim.keymap.set('n', '<leader>h', builtin.help_tags, {})
@@ -77,14 +83,44 @@ M.lazy_keymaps = function ()
 
 end
 
-M.general_keymaps = function ()
-	vim.keymap.set("n", ",k", vim.diagnostic.open_float, {})
+M.gitsigns_keymaps = function ()
+	vim.keymap.set("n", "]g", ":Gitsigns next_hunk<CR>", {})
+	vim.keymap.set("n", "[g", ":Gitsigns prev_hunk<CR>", {})
+	vim.keymap.set("n", ",gd", ":Gitsigns reset_hunk<CR>", {})
+	vim.keymap.set("n", ",gp", ":Gitsigns preview_hunk<CR>", {})
+	vim.keymap.set("n", ",gi", ":Gitsigns preview_hunk_inline<CR>", {})
 end
 
-M.gitsigns_keymaps = function ()
-	vim.keymap.set("n", ",gn", ":Gitsigns next_hunk<CR>", {})
-	vim.keymap.set("n", ",gp", ":Gitsigns prev_hunk<CR>", {})
-	vim.keymap.set("n", ",gd", ":Gitsigns reset_hunk<CR>", {})
+M.general_keymaps = function ()
+	vim.keymap.set("n", ",k", vim.diagnostic.open_float, {})
+
+	-- tabs
+	map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
+	map("n", "<leader><tab>f", "<cmd>tabfirst<cr>", { desc = "First Tab" })
+	map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
+	map("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+	map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
+	map("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
+
+	-- better up/down
+	map("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+	map("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+
+	if has("bufferline.nvim") then
+		vim.api.nvim_del_keymap("n", "]b")
+		vim.api.nvim_del_keymap("n", "[b")
+		map("n", "[b", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
+		map("n", "]b", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+	end
+
+	-- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
+	map("n", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
+	map("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
+	map("o", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
+	map("n", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
+	map("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
+	map("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
+
 end
 
 return M

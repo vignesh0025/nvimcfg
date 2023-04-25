@@ -16,7 +16,7 @@ local has = function (plugin)
 end
 
 local get_root = function ()
-	root_patterns = { ".git", "lua" }
+	local root_patterns = { ".git", "lua" }
 
 	---@type string?
 	local path = vim.api.nvim_buf_get_name(0)

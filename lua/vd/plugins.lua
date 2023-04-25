@@ -244,9 +244,7 @@ local plugins = {
 	{
 		"sindrets/diffview.nvim",
 		event = "VeryLazy",
-		keys = {
-			{",go", "<cmd>DiffviewOpen<CR>", desc = "Open diffview"}
-		},
+		keys = require('vd.keymaps').diffview_keymaps(),
 		config = function ()
 			local actions = require("diffview.actions")
 			local config = {
@@ -271,7 +269,7 @@ local plugins = {
 	{
 		'lewis6991/gitsigns.nvim',
 		tag = 'release',
-		event = 'VeryLazy',
+		event = { "BufReadPre", "BufNewFile" },
 		config = function()
 			require('gitsigns').setup()
 			require('vd.keymaps').gitsigns_keymaps()
@@ -515,8 +513,6 @@ local plugins = {
 		},
 		cmd = 'ZenMode'
 	},
-
-
 
 	{
 		"luukvbaal/statuscol.nvim",

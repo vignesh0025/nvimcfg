@@ -15,6 +15,43 @@ local has = function (plugin)
   return require("lazy.core.config").plugins[plugin] ~= nil
 end
 
+local get_root = function ()
+	root_patterns = { ".git", "lua" }
+
+	---@type string?
+	local path = vim.api.nvim_buf_get_name(0)
+	path = path ~= "" and vim.loop.fs_realpath(path) or nil
+	---@type string[]
+	local roots = {}
+	if path then
+		for _, client in pairs(vim.lsp.get_active_clients({ bufnr = 0 })) do
+			local workspace = client.config.workspace_folders
+			local paths = workspace and vim.tbl_map(function(ws)
+				return vim.uri_to_fname(ws.uri)
+			end, workspace) or client.config.root_dir and { client.config.root_dir } or {}
+			for _, p in ipairs(paths) do
+				local r = vim.loop.fs_realpath(p)
+				if path:find(r, 1, true) then
+					roots[#roots + 1] = r
+				end
+			end
+		end
+	end
+	table.sort(roots, function(a, b)
+		return #a > #b
+	end)
+	---@type string?
+	local root = roots[1]
+	if not root then
+		path = path and vim.fs.dirname(path) or vim.loop.cwd()
+		---@type string?
+		root = vim.fs.find(root_patterns, { path = path, upward = true })[1]
+		root = root and vim.fs.dirname(root) or vim.loop.cwd()
+	end
+	---@cast root string
+	return root
+end
+
 M.telescope_keymaps = function()
 	local builtin = require('telescope.builtin')
 
@@ -64,14 +101,16 @@ end
 
 M.lazy_keymaps = function ()
 
-	local set_term_cmd_keymap = function (key, cmd, close_on_exit)
+	local set_term_cmd_keymap = function (key, cmd, term_opts)
+		local _opts = vim.tbl_deep_extend("force", {
+			close_on_exit = true,
+			cwd = get_root(),
+			size = { width = 0.9, height = 0.9 },
+			terminal = true,
+			enter = true,
+		}, term_opts or {})
 		vim.keymap.set('n',key, function ()
-			require("lazy.util").float_term(cmd, {
-				cwd = "./",
-				terminal = true,
-				close_on_exit = close_on_exit or true,
-				enter = true,
-			})
+			require("lazy.util").float_term(cmd, term_opts)
 		end, {})
 	end
 
@@ -79,16 +118,24 @@ M.lazy_keymaps = function ()
 	set_term_cmd_keymap(",gl", {"lazygit", "log"})
 	set_term_cmd_keymap(",gs", {"lazygit", "status"})
 	set_term_cmd_keymap(",gb", {"lazygit", "branch"})
-	set_term_cmd_keymap(",gt", {"lazygit", "stash"})
 
+	set_term_cmd_keymap(",tf", nil, { cwd = get_root() })
 end
 
 M.gitsigns_keymaps = function ()
 	vim.keymap.set("n", "]g", ":Gitsigns next_hunk<CR>", {})
 	vim.keymap.set("n", "[g", ":Gitsigns prev_hunk<CR>", {})
-	vim.keymap.set("n", ",gd", ":Gitsigns reset_hunk<CR>", {})
+	vim.keymap.set("n", ",gr", ":Gitsigns reset_hunk<CR>", {})
 	vim.keymap.set("n", ",gp", ":Gitsigns preview_hunk<CR>", {})
 	vim.keymap.set("n", ",gi", ":Gitsigns preview_hunk_inline<CR>", {})
+	vim.keymap.set("n", ",gd", ":Gitsigns diffthis<CR>", {})
+end
+
+M.diffview_keymaps = function ()
+	return {
+		{",go", "<cmd>DiffviewOpen<CR>", desc = "Open diffview"},
+		{"ig", ":<C-U>Gitsigns select_hunk<CR>", mode = { "o", "x" }, desc = "GitSigns Select Hunk"}
+	}
 end
 
 M.general_keymaps = function ()

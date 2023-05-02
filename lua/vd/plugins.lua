@@ -473,7 +473,9 @@ local plugins = {
 		keys =  {
 			{",lr", "<cmd>Lspsaga lsp_finder<cr>", desc = "Saga lsp_finder"},
 			{",lo", "<cmd>Lspsaga outline<cr>", desc = "Saga outline"},
-			{",lk", "<cmd>Lspsaga hover_doc<cr>", desc = "Saga hover"}
+			{",lk", "<cmd>Lspsaga hover_doc<cr>", desc = "Saga hover"},
+			{",ld", "<cmd>Lspsaga show_line_diagnostics<cr>", desc = "Show line diagnostics"},
+			{",lca", "<cmd>Lspsaga code_action<cr>", desc = "Show line diagnostics"},
 		},
 		dependencies = { 'kyazdani42/nvim-web-devicons'},
 	},

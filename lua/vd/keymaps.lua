@@ -125,10 +125,11 @@ end
 M.gitsigns_keymaps = function ()
 	vim.keymap.set("n", "]g", ":Gitsigns next_hunk<CR>", {})
 	vim.keymap.set("n", "[g", ":Gitsigns prev_hunk<CR>", {})
-	vim.keymap.set("n", ",gr", ":Gitsigns reset_hunk<CR>", {})
+	vim.keymap.set("n", ",gR", ":Gitsigns reset_hunk<CR>", {})
 	vim.keymap.set("n", ",gp", ":Gitsigns preview_hunk<CR>", {})
 	vim.keymap.set("n", ",gi", ":Gitsigns preview_hunk_inline<CR>", {})
 	vim.keymap.set("n", ",gd", ":Gitsigns diffthis<CR>", {})
+	vim.keymap.set("n", ",ga", ":Gitsigns stage_hunk<CR>", {})
 end
 
 M.diffview_keymaps = function ()

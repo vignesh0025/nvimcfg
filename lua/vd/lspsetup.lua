@@ -68,6 +68,7 @@ local config_lspconfig = function()
 		or { on_attach = on_attach }
 
 	lspconfig.pyright.setup(setup_config)
+	lspconfig.verible.setup(setup_config)
 	lspconfig.clangd.setup(vim.tbl_deep_extend("force", setup_config, {
 		cmd = {
 			"clangd",

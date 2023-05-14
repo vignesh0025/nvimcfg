@@ -301,7 +301,7 @@ local plugins = {
 	{
 		'akinsho/bufferline.nvim',
 		event = "VeryLazy",
-		version = "v3.*",
+		version = "*",
 		dependencies = 'kyazdani42/nvim-web-devicons',
 		opts = {
 			-- Options are passed as require('bufferline').setup(opts)

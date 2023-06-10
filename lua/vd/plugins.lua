@@ -364,6 +364,7 @@ local plugins = {
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-path',
 			'hrsh7th/cmp-cmdline',
+			'hrsh7th/cmp-nvim-lsp-signature-help',
 			'hrsh7th/cmp-nvim-lsp',
 			{
 				'L3MON4D3/LuaSnip',
@@ -497,6 +498,9 @@ local plugins = {
 			end
 
 			null_ls.setup({
+				on_init = function(new_client, _)
+					new_client.offset_encoding = 'utf-32'
+				end,
 				sources = srcs
 			})
 		end

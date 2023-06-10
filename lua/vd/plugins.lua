@@ -277,28 +277,6 @@ local plugins = {
 	},
 
 	{
-		'kyazdani42/nvim-tree.lua',
-		dependencies = {
-			'kyazdani42/nvim-web-devicons', -- optional, for file icons
-		},
-		init = function()
-			    vim.g.loaded = 1
-			    vim.g.loaded_netrwPlugin = 1
-		end,
-		keys = {
-			{"<C-n>", "<Cmd>NvimTreeToggle<CR>", desc = "NeoTree"}
-		},
-		config = function()
-			require("nvim-tree").setup{
-				view = {
-					adaptive_size = false,
-					side = "right",
-				}
-			}
-		end
-	},
-
-	{
 		'akinsho/bufferline.nvim',
 		event = "VeryLazy",
 		version = "*",

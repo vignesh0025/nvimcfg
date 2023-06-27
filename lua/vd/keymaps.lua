@@ -120,6 +120,16 @@ M.lazy_keymaps = function ()
 	set_term_cmd_keymap(",gb", {"lazygit", "branch"})
 
 	set_term_cmd_keymap(",tf", nil, { cwd = get_root() })
+	vim.keymap.set("n", ",t.", function ()
+		local _opts = {
+			close_on_exit = true,
+			cwd = vim.fn.expand("%:p:h"),
+			size = { width = 0.9, height = 0.9 },
+			terminal = true,
+			enter = true,
+		}
+		require("lazy.util").float_term(nil, _opts)
+	end, {})
 end
 
 M.gitsigns_keymaps = function ()

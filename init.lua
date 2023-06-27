@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 vim.g.mapleader=" "
 vim.g.maplocalleader=[[\<space>]]
 
@@ -22,6 +24,7 @@ vim.o.smartindent = true
 vim.o.list = true
 vim.o.shiftround = true
 vim.o.scrolloff = 3
+vim.opt.splitkeep = "screen"
 
 -- Tab options
 vim.o.tabstop = 4

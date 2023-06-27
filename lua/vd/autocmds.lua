@@ -95,6 +95,33 @@ M.setup_commands =  function ()
 	vim.api.nvim_create_user_command('VDEnableDiagnostics', function ()
 		vim.diagnostic.enable()
 	end, {})
+
+end
+
+M.colorscheme_autocmds = function ()
+	local dim_color = function (c, alpha)
+		local b = math.floor((bit.band(c, 0xFF)) * alpha)
+		local g = math.floor((bit.band(bit.rshift(c, 8), 0xFF)) * alpha)
+		local r = math.floor((bit.band(bit.rshift(c, 16), 0xFF)) * alpha)
+
+		return bit.bor(bit.lshift(r, 16), bit.lshift(g, 8), b)
+	end
+
+	local dim_virtual_text = function (prev, current)
+		local diag_hint_color = vim.api.nvim_get_hl(0, {name = prev})
+		local color = dim_color(diag_hint_color.fg, 0.70)
+		vim.api.nvim_set_hl(0, current, {fg=color})
+	end
+
+	vim.api.nvim_create_autocmd({'ColorScheme'}, {
+		callback = function ()
+			vim.api.nvim_set_hl(0, '@lsp.type.comment', {link="@Comment"})
+			dim_virtual_text("DiagnosticWarn", "DiagnosticVirtualTextWarn")
+			dim_virtual_text("DiagnosticInfo", "DiagnosticVirtualTextInfo")
+			dim_virtual_text("DiagnosticError", "DiagnosticVirtualTextError")
+			dim_virtual_text("DiagnosticHint", "DiagnosticVirtualTextHint")
+		end
+	})
 end
 
 return M

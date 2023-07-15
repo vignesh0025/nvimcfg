@@ -141,7 +141,7 @@ local plugins = {
 
 			table.insert(vimgrep_arguments, "--hidden")
 			table.insert(vimgrep_arguments, "--glob")
-			table.insert(vimgrep_arguments, "!**/.git/*")
+			table.insert(vimgrep_arguments, "!{**/.git/*,**/.cache/*}")
 			table.insert(vimgrep_arguments, "-L")
 
 			require('telescope').setup{
@@ -175,7 +175,7 @@ local plugins = {
 				},
 				pickers = {
 					find_files = {
-						find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*", "-L" },
+						find_command = { "fd", "-L", "--type", "f", "--hidden", "--strip-cwd-prefix", "--exclude", ".git", "--exclude", ".cache"},
 					},
 				},
 				extensions = {
@@ -220,8 +220,9 @@ local plugins = {
 
 	 "tpope/vim-surround",
 
-	 {
-		"TimUntersberger/neogit",
+	{
+		'NeogitOrg/neogit',
+		dependencies = 'nvim-lua/plenary.nvim',
 		cmd = 'Neogit',
 		config = function()
 			require('neogit').setup{
@@ -493,6 +494,12 @@ local plugins = {
 			require('statuscol').setup()
 		end
 	},
+
+	{
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = {}
+	}
 
 }
 

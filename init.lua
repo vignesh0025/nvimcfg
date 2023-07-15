@@ -26,6 +26,9 @@ vim.o.shiftround = true
 vim.o.scrolloff = 3
 vim.opt.splitkeep = "screen"
 
+-- title
+vim.opt.title = true
+
 -- Tab options
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4

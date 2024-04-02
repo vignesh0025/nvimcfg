@@ -31,6 +31,7 @@ local plugins = {
 
 	{
 		"dasupradyumna/midnight.nvim",
+		enabled = false,
 		lazy = false,
 		priority = 1000,
 		config = function ()
@@ -41,11 +42,8 @@ local plugins = {
 
 	{
 		'lukas-reineke/indent-blankline.nvim',
-		config = function ()
-			require("indent_blankline").setup {
-				show_end_of_line = true,
-			}
-		end
+		main = "ibl",
+		opts = {}
 	},
 
 	'wellle/targets.vim', -- Nice Plugin to add more selection
@@ -63,14 +61,25 @@ local plugins = {
 
 	{
 		"folke/tokyonight.nvim",
-		enabled = false,
+		lazy = false,
+		priority = 1000,
 		config = function()
 			require("tokyonight").setup({
-				style = "storm",
+				style = "night",
 					theme = 'tokyonight'
 			})
-			-- vim.cmd[[colorscheme tokyonight]]
+			vim.cmd[[colorscheme tokyonight]]
 		end
+	},
+
+	{
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v3.x",
+		dependencies = {
+		"nvim-lua/plenary.nvim",
+		"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+		"MunifTanjim/nui.nvim",
+		}
 	},
 
 	{
@@ -93,6 +102,8 @@ local plugins = {
 					},
 				},
 			}
+
+			require("vd.autocmds").setup_dirchanged_autocmd()
 		end
 	},
 
@@ -222,6 +233,7 @@ local plugins = {
 
 	{
 		'NeogitOrg/neogit',
+		branch = "nightly",
 		dependencies = 'nvim-lua/plenary.nvim',
 		cmd = 'Neogit',
 		config = function()
@@ -380,14 +392,7 @@ local plugins = {
 
 	{
 		"j-hui/fidget.nvim",
-		config = function()
-			require"fidget".setup{
-				ui = {
-					-- currently only round theme
-					theme = 'moon',
-				}
-			}
-		end
+		opts = {}
 	},
 
 	{ "chrisbra/csv.vim", ft = { "csv" } },
@@ -449,8 +454,10 @@ local plugins = {
 		dependencies = { 'kyazdani42/nvim-web-devicons'},
 	},
 
+	{"nvim-treesitter/nvim-treesitter-context"},
+
 	{
-		"jose-elias-alvarez/null-ls.nvim",
+		"nvimtools/none-ls.nvim",
 		config = function ()
 			local null_ls = require("null-ls")
 

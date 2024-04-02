@@ -179,6 +179,13 @@ M.general_keymaps = function ()
 	map("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
 	map("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
 
+	if has("neo-tree.nvim") then
+		map("n", ",nf", "<cmd>Neotree filesystem float reveal=false<cr>", {desc = "Neotree FS Float"})
+		map("n", ",nn", "<cmd>Neotree filesystem float reveal<cr>", {desc = "Neotree FS Current file Float"})
+		map("n", ",ns", "<cmd>Neotree git_status float<cr>", {desc = "Neotree Git status Float"})
+		map("n", ",nb", "<cmd>Neotree buffers float reveal<cr>", {desc = "Neotree Buffers Float"})
+	end
+
 end
 
 return M

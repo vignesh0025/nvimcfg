@@ -87,6 +87,25 @@ M.au_session = function ()
 	})
 end
 
+M.setup_dirchanged_autocmd = function ()
+
+	local action = function ()
+		local a = require("lualine.components.branch")
+		local b,_ = a.update_status()
+		vim.opt.titlestring = vim.fn.fnamemodify(vim.fn.getcwd(), ":t").."("..b.."b"
+	end
+
+	action()
+
+	autocmd({'DirChanged', 'VimEnter'}, {
+		desc = "set title to current directory & branch",
+		pattern = "*",
+		callback = function ()
+			action()
+		end
+	})
+end
+
 M.setup_commands =  function ()
 	vim.api.nvim_create_user_command('VDDisableDiagnostics', function ()
 		vim.diagnostic.disable()

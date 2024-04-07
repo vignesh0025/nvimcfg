@@ -67,7 +67,7 @@ local config_lspconfig = function()
 	local setup_config = ret and coq.lsp_ensure_capabilities({ on_attach = on_attach })
 		or { on_attach = on_attach }
 
-	lspconfig.pyright.setup(setup_config)
+	lspconfig.basedpyright.setup(setup_config)
 	lspconfig.clangd.setup(vim.tbl_deep_extend("force", setup_config, {
 		cmd = {
 			"clangd",

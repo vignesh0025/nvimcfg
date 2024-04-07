@@ -62,7 +62,7 @@ M.telescope_keymaps = function()
 	vim.keymap.set('n', '<leader>b', builtin.buffers, {})
 	vim.keymap.set('n', '<leader>o', builtin.lsp_document_symbols, {})
 	vim.keymap.set('n', '<leader>g', builtin.grep_string, {})
-	vim.keymap.set('n', '<leader>d', function() builtin.diagnostics{bufnr=0} end, {})
+	vim.keymap.set('n', '<leader>d', function() builtin.diagnostics{bufnr=0, layout_strategy='vertical'} end, {})
 	vim.keymap.set('n', '<leader>t', builtin.colorscheme)
 	vim.keymap.set('n', '<leader><cr>', builtin.resume, {})
 

@@ -1,10 +1,10 @@
 local vconfig = require("config_enable")
 
 local opts = { noremap = true, silent = true }
-vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, opts)
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
+vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, vim.tbl_deep_extend("force", opts, {desc = "VimDiagnostic: Open"}))
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, vim.tbl_deep_extend("force", opts, {desc = "VimDiagnostic: Next"}))
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, vim.tbl_deep_extend("force", opts, {desc = "VimDiagnostic: Prex"}))
+vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, vim.tbl_deep_extend("force", opts, {desc = "VimDiagnostic: List"}))
 
 local config_lspconfig = function()
 	if vconfig.plugin.mason_enabled then
@@ -18,7 +18,8 @@ local config_lspconfig = function()
 	-- after the language server attaches to the current buffer
 	-- function(client, bufnr)
 	local on_attach = function(client, bufnr)
-		-- Enable completion triggered by <c-x><c-o>
+
+				-- Enable completion triggered by <c-x><c-o>
 
 		-- print(vim.inspect(client.name))
 		-- print(vim.inspect(client.server_capabilities))
@@ -26,28 +27,31 @@ local config_lspconfig = function()
 		-- Mappings.
 		-- See `:help vim.lsp.*` for documentation on any of the below functions
 		local bufopts = { noremap = true, silent = true, buffer = bufnr }
-		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
-		vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-		vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
-		vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
-		vim.keymap.set("n", ",wa", vim.lsp.buf.add_workspace_folder, bufopts)
-		vim.keymap.set("n", ",wr", vim.lsp.buf.remove_workspace_folder, bufopts)
+		local e = function (o, desc)
+			return vim.tbl_deep_extend("force", o, desc)
+		end
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, e(bufopts, {desc = "VimLsp: Goto Declaration"}))
+		vim.keymap.set("n", "gd", vim.lsp.buf.definition, e(bufopts, {desc = "VimLsp: Goto Definition"}))
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, e(bufopts, {desc = "VimLsp: Show Hover"}))
+		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, e(bufopts, {desc = "VimLsp: Goto Implementation"}))
+		vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, e(bufopts, {desc = "VimLsp: Show Signature"}))
+		vim.keymap.set("n", ",wa", vim.lsp.buf.add_workspace_folder, e(bufopts, {desc = "VimLsp: Add Workspace Folder"}))
+		vim.keymap.set("n", ",wr", vim.lsp.buf.remove_workspace_folder, e(bufopts, {desc = "VimLsp: Remove Worksapce Folder"}))
 		vim.keymap.set("n", ",wl", function()
 			print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-		end, bufopts)
-		vim.keymap.set("n", ",D", vim.lsp.buf.type_definition, bufopts)
-		vim.keymap.set("n", ",rn", vim.lsp.buf.rename, bufopts)
-		vim.keymap.set({"n", "v"}, ",ca", vim.lsp.buf.code_action, bufopts)
+		end, e(bufopts, {desc = "VimLsp: Goto Declaration"}))
+		vim.keymap.set("n", ",D", vim.lsp.buf.type_definition, e(bufopts, {desc = "VimLsp: Goto Type Definition"}))
+		vim.keymap.set("n", ",rn", vim.lsp.buf.rename, e(bufopts, {desc = "VimLsp: Rename Symbol"}))
+		vim.keymap.set({"n", "v"}, ",ca", vim.lsp.buf.code_action, e(bufopts, {desc = "VimLsp: Code Action"}))
 		vim.keymap.set({"n", "v"}, ",=", function()
 			vim.lsp.buf.format({ async = true })
-		end, bufopts)
+		end, e(bufopts, {desc = "VimLsp: Format"}))
 
 		local ret, builtin = pcall(require, "telescope.builtin")
 		if ret then
-			vim.keymap.set("n", "gr", builtin.lsp_references, bufopts)
+			vim.keymap.set("n", "gr", builtin.lsp_references, e(bufopts, {desc = "VimLsp: Find References"}))
 		else
-			vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+			vim.keymap.set("n", "gr", vim.lsp.buf.references, e(bufopts, {desc = "VimLsp: Find References"}))
 		end
 
 	end
@@ -134,7 +138,7 @@ local config_nvimcmp = function()
 
 	vim.keymap.set("n", "<leader>se", function ()
 		require("luasnip.loaders").edit_snippet_files()
-	end, {})
+	end, { desc = "LuaSnip: Edit Snippet for current filetype"})
 
 	vim.keymap.set({"i", "s" }, "<C-j>", function ()
 		if luasnip.choice_active() then

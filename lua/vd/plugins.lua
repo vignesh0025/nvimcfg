@@ -2,20 +2,57 @@ local vconfig = require("config_enable")
 local vautocmds = require("vd.autocmds")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
+if not vim.uv.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
 end
 
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
+
+	{
+		"rcarriga/nvim-dap-ui",
+		dependencies = {
+			"mfussenegger/nvim-dap",
+			"nvim-neotest/nvim-nio",
+		},
+		config = function()
+			require("dapui").setup()
+			local dap, dapui = require("dap"), require("dapui")
+			dap.listeners.before.attach.dapui_config = function()
+				dapui.open()
+			end
+			dap.listeners.before.launch.dapui_config = function()
+				dapui.open()
+			end
+			dap.listeners.before.event_terminated.dapui_config = function()
+				dapui.close()
+			end
+			dap.listeners.before.event_exited.dapui_config = function()
+				dapui.close()
+			end
+		end
+	},
+
+	{
+		"theHamsta/nvim-dap-virtual-text",
+		config = function()
+			require("nvim-dap-virtual-text").setup()
+		end
+	},
+
+	{
+		'mrcjkb/rustaceanvim',
+		version = '^4', -- Recommended
+		ft = { 'rust' },
+	},
 
 	{ "catppuccin/nvim", name = "catppuccin" },
 
@@ -23,7 +60,7 @@ local plugins = {
 		"rebelot/kanagawa.nvim",
 		lazy = false,
 		priority = 1000,
-		config = function ()
+		config = function()
 			vautocmds.colorscheme_autocmds()
 			-- vim.cmd("colorscheme kanagawa")
 		end
@@ -34,7 +71,7 @@ local plugins = {
 		enabled = false,
 		lazy = false,
 		priority = 1000,
-		config = function ()
+		config = function()
 			vautocmds.colorscheme_autocmds()
 			vim.cmd("colorscheme midnight")
 		end
@@ -66,9 +103,9 @@ local plugins = {
 		config = function()
 			require("tokyonight").setup({
 				style = "night",
-					theme = 'tokyonight'
+				theme = 'tokyonight'
 			})
-			vim.cmd[[colorscheme tokyonight]]
+			vim.cmd [[colorscheme tokyonight]]
 		end
 	},
 
@@ -76,20 +113,20 @@ local plugins = {
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",
 		dependencies = {
-		"nvim-lua/plenary.nvim",
-		"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-		"MunifTanjim/nui.nvim",
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+			"MunifTanjim/nui.nvim",
 		}
 	},
 
 	{
 		'nvim-lualine/lualine.nvim',
 		event = "VeryLazy",
-		dependencies = { 'kyazdani42/nvim-web-devicons'},
+		dependencies = { 'kyazdani42/nvim-web-devicons' },
 		config = function()
-			require('lualine').setup{
-				extensions = {'quickfix'},
-				options =  {
+			require('lualine').setup {
+				extensions = { 'quickfix' },
+				options = {
 					globalstatus = true,
 				},
 				sections = {
@@ -130,7 +167,7 @@ local plugins = {
 		"rcarriga/nvim-notify",
 		enabled = false,
 		event = "VeryLazy",
-		config = function ()
+		config = function()
 			vim.notify = require("notify")
 		end
 	},
@@ -139,10 +176,10 @@ local plugins = {
 		"nvim-telescope/telescope.nvim",
 		branch = "0.1.x",
 		dependencies = {
-			{"nvim-lua/plenary.nvim", lazy=true},
+			{ "nvim-lua/plenary.nvim",                       lazy = true },
 			{ "nvim-telescope/telescope-file-browser.nvim" },
 			-- {'nvim-telescope/telescope-ui-select.nvim'},
-			{'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+			{ 'nvim-telescope/telescope-fzf-native.nvim',    build = 'make' },
 			{ "nvim-telescope/telescope-live-grep-args.nvim" },
 		},
 		config = function()
@@ -155,7 +192,7 @@ local plugins = {
 			table.insert(vimgrep_arguments, "!{**/.git/*,**/.cache/*}")
 			table.insert(vimgrep_arguments, "-L")
 
-			require('telescope').setup{
+			require('telescope').setup {
 				defaults = {
 					vimgrep_arguments = vimgrep_arguments,
 					winblend = 20,
@@ -171,9 +208,9 @@ local plugins = {
 							local status = get_status(vim.api.nvim_get_current_buf())
 							local len = vim.api.nvim_win_get_width(status.results_win) - string.len(tail) - 7
 							head = require('plenary.strings').truncate(head, len, nil, -1)
-							head = '('..head..')'
-							if string.sub(head,1,1) == '/' then
-								head = head..'/'
+							head = '(' .. head .. ')'
+							if string.sub(head, 1, 1) == '/' then
+								head = head .. '/'
 							end
 						end
 						return string.format("%s %s", tail, head)
@@ -186,7 +223,7 @@ local plugins = {
 				},
 				pickers = {
 					find_files = {
-						find_command = { "fd", "-L", "--type", "f", "--hidden", "--strip-cwd-prefix", "--exclude", ".git", "--exclude", ".cache"},
+						find_command = { "fd", "-L", "--type", "f", "--hidden", "--strip-cwd-prefix", "--exclude", ".git", "--exclude", ".cache" },
 					},
 				},
 				extensions = {
@@ -212,24 +249,28 @@ local plugins = {
 		config = function()
 			require('telescope').load_extension('harpoon')
 		end,
-		dependencies = { {'ThePrimeagen/harpoon', lazy=true} },
+		dependencies = { { 'ThePrimeagen/harpoon', lazy = true } },
 		keys = {
-			{ ",ae", function ()
-				vim.cmd("lua require('harpoon.mark').add_file()")
-				vim.notify("Harpooned")
-			end, desc = "Add Harpoon Mark" },
+			{
+				",ae",
+				function()
+					vim.cmd("lua require('harpoon.mark').add_file()")
+					vim.notify("Harpooned")
+				end,
+				desc = "Add Harpoon Mark"
+			},
 			{ ",e", "<cmd>Telescope harpoon marks<cr>", desc = "Show Harpoon Marks" },
 		},
 	},
 
 	{
 		"numToStr/Comment.nvim",
-		config = function ()
+		config = function()
 			require('Comment').setup()
 		end
 	},
 
-	 "tpope/vim-surround",
+	"tpope/vim-surround",
 
 	{
 		'NeogitOrg/neogit',
@@ -237,7 +278,7 @@ local plugins = {
 		dependencies = 'nvim-lua/plenary.nvim',
 		cmd = 'Neogit',
 		config = function()
-			require('neogit').setup{
+			require('neogit').setup {
 				integrations = { diffview = true },
 			}
 		end
@@ -247,19 +288,19 @@ local plugins = {
 		"sindrets/diffview.nvim",
 		event = "VeryLazy",
 		keys = require('vd.keymaps').diffview_keymaps(),
-		config = function ()
+		config = function()
 			local actions = require("diffview.actions")
 			local config = {
 				keymaps = {
 					view = {
-						{"n", "<c-u>", actions.scroll_view(-0.25), {desc = "Scroll the view up"}},
-						{"n", "<c-d>", actions.scroll_view(0.25), {desc = "Scroll the view down"}},
-						{"n", ",t", actions.toggle_files, {desc = "Toggle the file panel"}}
+						{ "n", "<c-u>", actions.scroll_view(-0.25), { desc = "Scroll the view up" } },
+						{ "n", "<c-d>", actions.scroll_view(0.25),  { desc = "Scroll the view down" } },
+						{ "n", ",t",    actions.toggle_files,       { desc = "Toggle the file panel" } }
 					},
 					file_panel = {
-						{"n", "<c-u>", actions.scroll_view(-0.25), {desc = "Scroll the view up"}},
-						{"n", "<c-d>", actions.scroll_view(0.25), {desc = "Scroll the view down"}},
-						{"n", ",t", actions.toggle_files, {desc = "Toggle the file panel"}}
+						{ "n", "<c-u>", actions.scroll_view(-0.25), { desc = "Scroll the view up" } },
+						{ "n", "<c-d>", actions.scroll_view(0.25),  { desc = "Scroll the view down" } },
+						{ "n", ",t",    actions.toggle_files,       { desc = "Toggle the file panel" } }
 					}
 				}
 			}
@@ -298,7 +339,7 @@ local plugins = {
 		event = 'BufReadPost',
 		build = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
 		config = function()
-			require'nvim-treesitter.configs'.setup {
+			require 'nvim-treesitter.configs'.setup {
 				ensure_installed = { "c", "lua", "python", "cpp", "vim", "markdown", "vimdoc", "markdown_inline" },
 				sync_install = false,
 				highlight = {
@@ -312,32 +353,35 @@ local plugins = {
 		end
 	},
 
-	{ "nvim-treesitter/nvim-treesitter-textobjects",
+	{
+		"nvim-treesitter/nvim-treesitter-textobjects",
 		event = 'BufRead',
-		config = function ()
-		require('nvim-treesitter.configs').setup({
-			textobjects = {
-				select = {
-					enable = true,
-					keymaps = {
-						["af"] = "@function.outer",
-						["if"] = "@function.inner",
-						["ac"] = "@class.outer",
-						["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-					},
+		config = function()
+			require('nvim-treesitter.configs').setup({
+				textobjects = {
+					select = {
+						enable = true,
+						keymaps = {
+							["af"] = "@function.outer",
+							["if"] = "@function.inner",
+							["ac"] = "@class.outer",
+							["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+						},
+					}
 				}
-			}
-		})
-	end },
+			})
+		end
+	},
 
 	{
 		"folke/neodev.nvim",
 		enabled = vconfig.plugin.neodev_enabled
 	},
 
-	{ "ms-jpq/coq_nvim", enabled = false, setup = require('vd.lspsetup').setup_coq },
+	{ "ms-jpq/coq_nvim", enabled = false,    setup = require('vd.lspsetup').setup_coq },
 
-	{ 'hrsh7th/nvim-cmp',
+	{
+		'hrsh7th/nvim-cmp',
 		event = 'InsertEnter',
 		dependencies = {
 			'onsails/lspkind.nvim',
@@ -349,23 +393,23 @@ local plugins = {
 			{
 				'L3MON4D3/LuaSnip',
 				version = "v1.*",
-				dependencies = {'honza/vim-snippets'},
+				dependencies = { 'honza/vim-snippets' },
 				config = function()
 					require("luasnip").config.set_config({
-					enable_autosnippets = true,
-					updateevents = "TextChanged,TextChangedI",
-					delete_check_events = "TextChanged",
-					store_selection_keys = "<Tab>",
-					ext_opts = {
-						[require("luasnip.util.types").choiceNode] = {
-							active = {
-								virt_text = { { "●", "GruvboxOrange" } },
-							},
+						enable_autosnippets = true,
+						updateevents = "TextChanged,TextChangedI",
+						delete_check_events = "TextChanged",
+						store_selection_keys = "<Tab>",
+						ext_opts = {
+							[require("luasnip.util.types").choiceNode] = {
+								active = {
+									virt_text = { { "●", "GruvboxOrange" } },
+								},
+							}
 						}
-					}
-				})
-				require("luasnip.loaders.from_snipmate").lazy_load() -- Loads 'Snippets' folder in RTP
-				require("luasnip.loaders.from_lua").lazy_load({paths = "~/.config/nvim/lua_snippets"}) -- Loads lua_snippets in cfg
+					})
+					require("luasnip.loaders.from_snipmate").lazy_load()                      -- Loads 'Snippets' folder in RTP
+					require("luasnip.loaders.from_lua").lazy_load({ paths = "~/.config/nvim/lua_snippets" }) -- Loads lua_snippets in cfg
 				end
 			},
 			'saadparwaiz1/cmp_luasnip'
@@ -373,9 +417,9 @@ local plugins = {
 		config = require('vd.lspsetup').config_nvimcmp
 	},
 
-	{ "williamboman/mason.nvim", enabled = vconfig.plugin.mason_enabled },
+	{ "williamboman/mason.nvim",           enabled = vconfig.plugin.mason_enabled },
 	{ "williamboman/mason-lspconfig.nvim", enabled = vconfig.plugin.mason_enabled },
-	{ "neovim/nvim-lspconfig", config = require('vd.lspsetup').config_lspconfig },
+	{ "neovim/nvim-lspconfig",             config = require('vd.lspsetup').config_lspconfig },
 
 	{
 		"nvim-neorg/neorg",
@@ -395,28 +439,31 @@ local plugins = {
 		opts = {}
 	},
 
-	{ "chrisbra/csv.vim", ft = { "csv" } },
+	{ "chrisbra/csv.vim",         ft = { "csv" } },
 
 	-- SessionLoad
 	-- SessionSave
 	-- SessionStop
-	{'natecraddock/sessions.nvim', config = function ()
-		require("sessions").setup({
-			session_filepath = "./.session",
-		})
+	{
+		'natecraddock/sessions.nvim',
+		config = function()
+			require("sessions").setup({
+				session_filepath = "./.session",
+			})
 
-		require("vd.autocmds").au_session()
-	end},
+			require("vd.autocmds").au_session()
+		end
+	},
 
 
-	{'dstein64/vim-startuptime', enabled=false},
+	{ 'dstein64/vim-startuptime', enabled = false },
 
 	-- TODO: Resize support
 	{
 		"aserowy/tmux.nvim",
 		event = "VeryLazy",
-		config = function ()
-			require("tmux").setup{
+		config = function()
+			require("tmux").setup {
 				navigation = {
 					cycle_navigation = false,
 				},
@@ -433,7 +480,7 @@ local plugins = {
 		'glepnir/lspsaga.nvim',
 		branch = "main",
 		event = "BufRead",
-		config = function ()
+		config = function()
 			require("lspsaga").setup({
 				lightbulb = {
 					enable = false
@@ -444,21 +491,21 @@ local plugins = {
 				}
 			})
 		end,
-		keys =  {
-			{",lr", "<cmd>Lspsaga lsp_finder<cr>", desc = "Saga lsp_finder"},
-			{",lo", "<cmd>Lspsaga outline<cr>", desc = "Saga outline"},
-			{",lk", "<cmd>Lspsaga hover_doc<cr>", desc = "Saga hover"},
-			{",ld", "<cmd>Lspsaga show_line_diagnostics<cr>", desc = "Show line diagnostics"},
-			{",lca", "<cmd>Lspsaga code_action<cr>", desc = "Show line diagnostics"},
+		keys = {
+			{ ",lr",  "<cmd>Lspsaga lsp_finder<cr>",            desc = "Saga lsp_finder" },
+			{ ",lo",  "<cmd>Lspsaga outline<cr>",               desc = "Saga outline" },
+			{ ",lk",  "<cmd>Lspsaga hover_doc<cr>",             desc = "Saga hover" },
+			{ ",ld",  "<cmd>Lspsaga show_line_diagnostics<cr>", desc = "Show line diagnostics" },
+			{ ",lca", "<cmd>Lspsaga code_action<cr>",           desc = "Show line diagnostics" },
 		},
-		dependencies = { 'kyazdani42/nvim-web-devicons'},
+		dependencies = { 'kyazdani42/nvim-web-devicons' },
 	},
 
-	{"nvim-treesitter/nvim-treesitter-context"},
+	{ "nvim-treesitter/nvim-treesitter-context" },
 
 	{
 		"nvimtools/none-ls.nvim",
-		config = function ()
+		config = function()
 			local null_ls = require("null-ls")
 
 			local srcs = {
@@ -469,7 +516,7 @@ local plugins = {
 
 			local addn_srcs = vconfig.get_addn_nulls_srcs()
 			if addn_srcs then
-				srcs = vim.tbl_extend("force",srcs, addn_srcs)
+				srcs = vim.tbl_extend("force", srcs, addn_srcs)
 			end
 
 			null_ls.setup({
@@ -482,13 +529,34 @@ local plugins = {
 	},
 
 	{
+		"stevearc/conform.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		config = function()
+			local conform = require("conform")
+
+			conform.setup({
+				formatters_by_ft = {
+					lua = { "stylua" },
+					python = { "isort", "black" },
+					c = { "clang-format" },
+					cpp = { "clang-format" },
+					rust = { "rustfmt" }
+
+				},
+			})
+
+			require("vd.keymaps").conform_keymaps(conform)
+		end,
+	},
+
+	{
 		'folke/zen-mode.nvim',
 		config = function()
 			require('zen-mode').setup()
 		end,
 		keys = {
-			 { "<leader>z", "<cmd>ZenMode<cr>", desc = "ZenMode" },
-		 },
+			{ "<leader>z", "<cmd>ZenMode<cr>", desc = "ZenMode" },
+		},
 		dependencies = {
 			{ 'folke/twilight.nvim', config = function() require('twilight').setup() end }
 		},
@@ -497,7 +565,7 @@ local plugins = {
 
 	{
 		"luukvbaal/statuscol.nvim",
-		config = function ()
+		config = function()
 			require('statuscol').setup()
 		end
 	},

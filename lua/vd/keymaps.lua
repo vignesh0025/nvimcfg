@@ -1,21 +1,21 @@
 local M = {}
 
-local map = function (mode, lhs, rhs, opts)
-  local keys = require("lazy.core.handler").handlers.keys
-  ---@cast keys LazyKeysHandler
-  -- do not create the keymap if a lazy keys handler exists
-  if not keys.active[keys.parse({ lhs, mode = mode }).id] then
-    opts = opts or {}
-    opts.silent = opts.silent ~= false
-    vim.keymap.set(mode, lhs, rhs, opts)
-  end
+local map = function(mode, lhs, rhs, opts)
+	local keys = require("lazy.core.handler").handlers.keys
+	---@cast keys LazyKeysHandler
+	-- do not create the keymap if a lazy keys handler exists
+	if not keys.active[keys.parse({ lhs, mode = mode }).id] then
+		opts = opts or {}
+		opts.silent = opts.silent ~= false
+		vim.keymap.set(mode, lhs, rhs, opts)
+	end
 end
 
-local has = function (plugin)
-  return require("lazy.core.config").plugins[plugin] ~= nil
+local has = function(plugin)
+	return require("lazy.core.config").plugins[plugin] ~= nil
 end
 
-local get_root = function ()
+local get_root = function()
 	local root_patterns = { ".git", "lua" }
 
 	---@type string?
@@ -55,39 +55,40 @@ end
 M.telescope_keymaps = function()
 	local builtin = require('telescope.builtin')
 
---	Leader based Keymaps
-	vim.keymap.set('n', '<leader>h', builtin.help_tags, {})
-	vim.keymap.set('n', '<leader>p', function() builtin.find_files{follow=true} end, {})
-	vim.keymap.set('n', '<leader>r', builtin.oldfiles, {})
-	vim.keymap.set('n', '<leader>b', builtin.buffers, {})
-	vim.keymap.set('n', '<leader>o', builtin.lsp_document_symbols, {})
-	vim.keymap.set('n', '<leader>g', builtin.grep_string, {})
-	vim.keymap.set('n', '<leader>d', function() builtin.diagnostics{bufnr=0, layout_strategy='vertical'} end, {})
-	vim.keymap.set('n', '<leader>t', builtin.colorscheme)
-	vim.keymap.set('n', '<leader><cr>', builtin.resume, {})
+	--	Leader based Keymaps
+	vim.keymap.set('n', '<leader>h', builtin.help_tags, { desc = "Telescope: Help"})
+	vim.keymap.set('n', '<leader>p', function() builtin.find_files { follow = true } end, { desc = "Telescope: File Files"})
+	vim.keymap.set('n', '<leader>r', builtin.oldfiles, { desc = "Telescope: Old Files"})
+	vim.keymap.set('n', '<leader>b', builtin.buffers, { desc = "Telescope: Buffers"})
+	vim.keymap.set('n', '<leader>o', builtin.lsp_document_symbols, { desc = "Telescope: Lsp Documents Symbols"})
+	vim.keymap.set('n', '<leader>g', builtin.grep_string, { desc = "Telescope: Grep String under cursor"})
+	vim.keymap.set('n', '<leader>d', function() builtin.diagnostics { bufnr = 0, layout_strategy = 'vertical' } end, { desc = "Telescope: Diagnostics"})
+	vim.keymap.set('n', '<leader>t', builtin.colorscheme, { desc = "Telescope: Color Scheme"})
+	vim.keymap.set('n', '<leader><cr>', builtin.resume, { desc = "Telescope: Resume Last"})
 
--- Extension Keymaps
+	-- Extension Keymaps
 	local extensions = require('telescope').extensions
 
-	vim.keymap.set('n', '<c-p>f',extensions.file_browser.file_browser, {})
+	vim.keymap.set('n', '<c-p>f', extensions.file_browser.file_browser, {})
 	-- This actually maps <c-/> to fb at current open file directory
 	-- vim.keymap.set('n', '<c-_>', function() extensions.file_browser.file_browser{cwd=vim.fn.expand("%:p:h")} end, {})
-	vim.keymap.set('n', '<c-_>', function() extensions.file_browser.file_browser{path="%:p:h"} end, {})
-	vim.keymap.set('n', '<c-Bslash>', extensions.live_grep_args.live_grep_args, {})
+	vim.keymap.set('n', '<c-_>', function() extensions.file_browser.file_browser { path = "%:p:h" } end, {desc = "Telescope: File Browser"})
+	vim.keymap.set('n', '<c-Bslash>', extensions.live_grep_args.live_grep_args, {desc = "Telescope: Live Grep with Args"})
 
-	vim.keymap.set('n', '<leader>f',extensions.file_browser.file_browser, {})
-	vim.keymap.set('n', '<leader>.', function() extensions.file_browser.file_browser{path="%:p:h", select_buffer=true} end, {})
-	vim.keymap.set('n', '<leader>/', extensions.live_grep_args.live_grep_args, {})
+	vim.keymap.set('n', '<leader>f', extensions.file_browser.file_browser, {desc = "Telescope: File Browser"})
+	vim.keymap.set('n', '<leader>.',
+		function() extensions.file_browser.file_browser { path = "%:p:h", select_buffer = true } end, {desc = "Telescope: File Browser under current file"})
+	vim.keymap.set('n', '<leader>/', extensions.live_grep_args.live_grep_args, {desc = "Telescope: Live Grep"})
 
-	local bufopts = { noremap=true, silent=true}
-	vim.keymap.set("n", "<leader>ev", function() builtin.fd{cwd="~/.config/nvim/"} end, bufopts)
+	local bufopts = { noremap = true, silent = true, desc = "Telescope: Find-file Nvim Config"}
+	vim.keymap.set("n", "<leader>ev", function() builtin.fd { cwd = "~/.config/nvim/" } end, bufopts)
 
-	vim.keymap.set("n", "<leader><leader>", function ()
-		vim.api.nvim_command[[Telescope]]
-	end)
+	vim.keymap.set("n", "<leader><leader>", function()
+		vim.api.nvim_command [[Telescope]]
+	end, {desc = "Telescope: Show all"})
 end
 
-M.tmux_keymaps = function ()
+M.tmux_keymaps = function()
 	vim.keymap.set('n', '<m-j>', require("tmux").move_bottom, {})
 	vim.keymap.set('n', '<m-h>', require("tmux").move_left, {})
 	vim.keymap.set('n', '<m-k>', require("tmux").move_top, {})
@@ -99,9 +100,8 @@ M.tmux_keymaps = function ()
 	vim.keymap.set('n', '<m-Right>', require("tmux").move_right, {})
 end
 
-M.lazy_keymaps = function ()
-
-	local set_term_cmd_keymap = function (key, cmd, term_opts)
+M.lazy_keymaps = function()
+	local set_term_cmd_keymap = function(key, cmd, term_opts, key_opts)
 		local _opts = vim.tbl_deep_extend("force", {
 			close_on_exit = true,
 			cwd = get_root(),
@@ -109,18 +109,18 @@ M.lazy_keymaps = function ()
 			terminal = true,
 			enter = true,
 		}, term_opts or {})
-		vim.keymap.set('n',key, function ()
+		vim.keymap.set('n', key, function()
 			require("lazy.util").float_term(cmd, _opts)
-		end, {})
+		end, key_opts or {})
 	end
 
-	set_term_cmd_keymap(",gg", {"lazygit"})
-	set_term_cmd_keymap(",gl", {"lazygit", "log"})
-	set_term_cmd_keymap(",gs", {"lazygit", "status"})
-	set_term_cmd_keymap(",gb", {"lazygit", "branch"})
+	set_term_cmd_keymap(",gg", { "lazygit" }, nil, { desc = "LazyGit" })
+	set_term_cmd_keymap(",gl", { "lazygit", "log" }, nil, { desc = "LazyGit Log" })
+	set_term_cmd_keymap(",gs", { "lazygit", "status" }, nil, { desc = "LazyGit Status" })
+	set_term_cmd_keymap(",gb", { "lazygit", "branch" },  nil, { desc = "LazyGit Breanches" })
 
-	set_term_cmd_keymap(",tf", nil, { cwd = get_root() })
-	vim.keymap.set("n", ",t.", function ()
+	set_term_cmd_keymap(",tf", nil, { cwd = get_root() }, { desc = "Term: Open floating terminal"})
+	vim.keymap.set("n", ",t.", function()
 		local _opts = {
 			close_on_exit = true,
 			cwd = vim.fn.expand("%:p:h"),
@@ -129,28 +129,28 @@ M.lazy_keymaps = function ()
 			enter = true,
 		}
 		require("lazy.util").float_term(nil, _opts)
-	end, {})
+	end, { desc = "Term: OPen floating terminal in current folder"})
 end
 
-M.gitsigns_keymaps = function ()
-	vim.keymap.set("n", "]g", ":Gitsigns next_hunk<CR>", {})
-	vim.keymap.set("n", "[g", ":Gitsigns prev_hunk<CR>", {})
-	vim.keymap.set("n", ",gR", ":Gitsigns reset_hunk<CR>", {})
-	vim.keymap.set("n", ",gp", ":Gitsigns preview_hunk<CR>", {})
-	vim.keymap.set("n", ",gi", ":Gitsigns preview_hunk_inline<CR>", {})
-	vim.keymap.set("n", ",gd", ":Gitsigns diffthis<CR>", {})
-	vim.keymap.set("n", ",ga", ":Gitsigns stage_hunk<CR>", {})
+M.gitsigns_keymaps = function()
+	vim.keymap.set("n", "]g", ":Gitsigns next_hunk<CR>", { desc = "Gitsigns Next Hunk" })
+	vim.keymap.set("n", "[g", ":Gitsigns prev_hunk<CR>", { desc = "Gitsigns Previous Hunk" })
+	vim.keymap.set("n", ",gR", ":Gitsigns reset_hunk<CR>", { desc = "Gitsigns Reset Hunk" })
+	vim.keymap.set("n", ",gp", ":Gitsigns preview_hunk<CR>", { desc = "Gitsigns Preview Hunk" })
+	vim.keymap.set("n", ",gi", ":Gitsigns preview_hunk_inline<CR>", { desc = "Gitsigns Preview Hunk Inline" })
+	vim.keymap.set("n", ",gd", ":Gitsigns diffthis<CR>", { desc = "Gitsigns Diff this file" })
+	vim.keymap.set("n", ",ga", ":Gitsigns stage_hunk<CR>", { desc = "Gitsigns Stage Hunk" })
 end
 
-M.diffview_keymaps = function ()
+M.diffview_keymaps = function()
 	return {
-		{",go", "<cmd>DiffviewOpen<CR>", desc = "Open diffview"},
-		{"ig", ":<C-U>Gitsigns select_hunk<CR>", mode = { "o", "x" }, desc = "GitSigns Select Hunk"}
+		{ ",go", "<cmd>DiffviewOpen<CR>",          desc = "Open diffview" },
+		{ "ig",  ":<C-U>Gitsigns select_hunk<CR>", mode = { "o", "x" },   desc = "GitSigns Select Hunk" }
 	}
 end
 
-M.general_keymaps = function ()
-	vim.keymap.set("n", ",k", vim.diagnostic.open_float, {})
+M.general_keymaps = function()
+	vim.keymap.set("n", ",k", vim.diagnostic.open_float, { desc = "Show diagnostic under cursor" })
 
 	-- tabs
 	map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
@@ -180,12 +180,21 @@ M.general_keymaps = function ()
 	map("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
 
 	if has("neo-tree.nvim") then
-		map("n", ",nf", "<cmd>Neotree filesystem float reveal=false<cr>", {desc = "Neotree FS Float"})
-		map("n", ",nn", "<cmd>Neotree filesystem float reveal<cr>", {desc = "Neotree FS Current file Float"})
-		map("n", ",ns", "<cmd>Neotree git_status float<cr>", {desc = "Neotree Git status Float"})
-		map("n", ",nb", "<cmd>Neotree buffers float reveal<cr>", {desc = "Neotree Buffers Float"})
+		map("n", ",nf", "<cmd>Neotree filesystem float reveal=false<cr>", { desc = "Neotree FS Float" })
+		map("n", ",nn", "<cmd>Neotree filesystem float reveal<cr>", { desc = "Neotree FS Current file Float" })
+		map("n", ",ns", "<cmd>Neotree git_status float<cr>", { desc = "Neotree Git status Float" })
+		map("n", ",nb", "<cmd>Neotree buffers float reveal<cr>", { desc = "Neotree Buffers Float" })
 	end
+end
 
+M.conform_keymaps = function(conform)
+	vim.keymap.set({ "n", "v" }, "<leader>=", function()
+		conform.format({
+			lsp_fallback = true,
+			async = false,
+			timeout_ms = 1000,
+		})
+	end, { desc = "Format file or range (in visual mode)" })
 end
 
 return M

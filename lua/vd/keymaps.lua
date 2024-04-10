@@ -142,6 +142,7 @@ M.gitsigns_keymaps = function()
 	vim.keymap.set("n", ",gi", gs.preview_hunk_inline, { desc = "Gitsigns: Preview Hunk Inline" })
 	vim.keymap.set("n", ",gd", gs.diffthis, { desc = "Gitsigns: Diff this file" })
 	vim.keymap.set("n", ",ga", gs.stage_hunk, { desc = "Gitsigns: Stage Hunk" })
+	vim.keymap.set("n", ",gx", gs.blame_line, { desc = "Gitsigns: Stage Hunk" })
 
 	vim.keymap.set("v", ",ga", function()
 		gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })

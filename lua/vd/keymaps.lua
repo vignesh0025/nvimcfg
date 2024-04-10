@@ -133,13 +133,24 @@ M.lazy_keymaps = function()
 end
 
 M.gitsigns_keymaps = function()
-	vim.keymap.set("n", "]g", ":Gitsigns next_hunk<CR>", { desc = "Gitsigns Next Hunk" })
-	vim.keymap.set("n", "[g", ":Gitsigns prev_hunk<CR>", { desc = "Gitsigns Previous Hunk" })
-	vim.keymap.set("n", ",gR", ":Gitsigns reset_hunk<CR>", { desc = "Gitsigns Reset Hunk" })
-	vim.keymap.set("n", ",gp", ":Gitsigns preview_hunk<CR>", { desc = "Gitsigns Preview Hunk" })
-	vim.keymap.set("n", ",gi", ":Gitsigns preview_hunk_inline<CR>", { desc = "Gitsigns Preview Hunk Inline" })
-	vim.keymap.set("n", ",gd", ":Gitsigns diffthis<CR>", { desc = "Gitsigns Diff this file" })
-	vim.keymap.set("n", ",ga", ":Gitsigns stage_hunk<CR>", { desc = "Gitsigns Stage Hunk" })
+
+	local gs = require('gitsigns')
+	vim.keymap.set("n", "]g", gs.next_hunk, { desc = "Gitsigns: Next Hunk" })
+	vim.keymap.set("n", "[g", gs.prev_hunk, { desc = "Gitsigns: Previous Hunk" })
+	vim.keymap.set("n", ",gR", gs.reset_hunk, { desc = "Gitsigns: Reset Hunk" })
+	vim.keymap.set("n", ",gp", gs.preview_hunk, { desc = "Gitsigns: Preview Hunk" })
+	vim.keymap.set("n", ",gi", gs.preview_hunk_inline, { desc = "Gitsigns: Preview Hunk Inline" })
+	vim.keymap.set("n", ",gd", gs.diffthis, { desc = "Gitsigns: Diff this file" })
+	vim.keymap.set("n", ",ga", gs.stage_hunk, { desc = "Gitsigns: Stage Hunk" })
+
+	vim.keymap.set("v", ",ga", function()
+		gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+	end, {desc = "Gitsigns: Stage Selected Hunk"})
+
+	vim.keymap.set("v", ",gR", function()
+		gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+	end, {desc = "Gitsigns: Reset Selected Hunk"})
+
 end
 
 M.diffview_keymaps = function()

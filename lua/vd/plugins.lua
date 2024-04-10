@@ -378,8 +378,6 @@ local plugins = {
 		enabled = vconfig.plugin.neodev_enabled
 	},
 
-	{ "ms-jpq/coq_nvim", enabled = false,    setup = require('vd.lspsetup').setup_coq },
-
 	{
 		'hrsh7th/nvim-cmp',
 		event = 'InsertEnter',

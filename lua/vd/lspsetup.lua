@@ -58,18 +58,13 @@ local config_lspconfig = function()
 
 	local use_coq = false
 
-	if use_coq == true then
-		local ret, coq = pcall(require, "coq")
-	else
-		-- We are modifying default capabilities by appending our own.
-		-- So no need to pass it to config
-		local lsp_defaults = lspconfig.util.default_config
-		lsp_defaults.capabilities =
-			vim.tbl_deep_extend("force", lsp_defaults.capabilities, require("cmp_nvim_lsp").default_capabilities())
-	end
+	-- We are modifying default capabilities by appending our own.
+	-- So no need to pass it to config
+	local lsp_defaults = lspconfig.util.default_config
+	lsp_defaults.capabilities =
+	vim.tbl_deep_extend("force", lsp_defaults.capabilities, require("cmp_nvim_lsp").default_capabilities())
 
-	local setup_config = ret and coq.lsp_ensure_capabilities({ on_attach = on_attach })
-		or { on_attach = on_attach }
+	local setup_config = { on_attach = on_attach }
 
 	lspconfig.basedpyright.setup(setup_config)
 	lspconfig.clangd.setup(vim.tbl_deep_extend("force", setup_config, {

@@ -102,11 +102,20 @@ local plugins = {
 		lazy = false,
 		priority = 1000,
 		config = function()
-			require("tokyonight").setup({
-				style = "night",
-				theme = 'tokyonight'
-			})
-			vim.cmd [[colorscheme tokyonight]]
+			-- require("tokyonight").setup({
+			-- 	style = "night",
+			-- 	theme = 'tokyonight'
+			-- })
+			-- vim.cmd [[colorscheme tokyonight]]
+		end
+	},
+
+	{
+		"sainnhe/everforest",
+		lazy = false,
+		priority = 1000,
+		config = function ()
+			vim.cmd [[colorscheme everforest]]
 		end
 	},
 

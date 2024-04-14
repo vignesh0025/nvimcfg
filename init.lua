@@ -40,7 +40,7 @@ vim.o.softtabstop = 4
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.opt.grepprg = 'rg --vimgrep'
-vim.opt.grepformat = '%f:%l:%c:%m:%f:%l:%m'
+vim.opt.grepformat = "%f:%l:%c:%m"
 
 vim.opt.joinspaces = false
 

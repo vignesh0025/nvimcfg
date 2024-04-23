@@ -164,6 +164,8 @@ end
 M.general_keymaps = function()
 	vim.keymap.set("n", ",k", vim.diagnostic.open_float, { desc = "Show diagnostic under cursor" })
 
+	vim.keymap.set("n", "V", "^v$", { desc = "Select entire line" })
+
 	-- tabs
 	map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
 	map("n", "<leader><tab>f", "<cmd>tabfirst<cr>", { desc = "First Tab" })

@@ -582,8 +582,14 @@ local plugins = {
 		"folke/todo-comments.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {}
-	}
+	},
 
+	{
+		"vignesh0025/nvim-todo-toggle-comment",
+		config = function ()
+			require("nvim-todo-toggle-comment").setup()
+		end
+	}
 }
 
 local opt = {

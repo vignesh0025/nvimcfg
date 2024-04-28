@@ -56,4 +56,8 @@ vim.keymap.set('i', "jk", "<esc>")
 
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " } for type, icon in pairs(signs) do local hl = "DiagnosticSign" .. type vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" }) end
 
-vim.o.guifont = "Hack Nerd Font:h11"
+if vim.loop.os_uname().sysname == "Darwin" then
+	vim.o.guifont = "FiraCode Nerd Font:h17"
+else
+	vim.o.guifont = "Hack Nerd Font:h11"
+end

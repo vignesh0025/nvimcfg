@@ -22,9 +22,11 @@ local plugins = {
 		dependencies = {
 			"mfussenegger/nvim-dap",
 			"nvim-neotest/nvim-nio",
+			"jbyuki/one-small-step-for-vimkind",
 		},
 		config = function()
 			require("dapui").setup()
+
 			local dap, dapui = require("dap"), require("dapui")
 			dap.listeners.before.attach.dapui_config = function()
 				dapui.open()
@@ -38,6 +40,20 @@ local plugins = {
 			dap.listeners.before.event_exited.dapui_config = function()
 				dapui.close()
 			end
+
+			dap.configurations.lua = {
+				{
+					type = 'nlua',
+					request = 'attach',
+					name = "Attach to running Neovim instance",
+				}
+			}
+
+			dap.adapters.nlua = function(callback, config)
+				callback({ type = 'server', host = config.host or "127.0.0.1", port = config.port or 8086 })
+			end
+
+			require('vd.keymaps').dap_keymaps()
 		end
 	},
 
@@ -589,6 +605,8 @@ local plugins = {
 		config = function ()
 			require("nvim-todo-toggle-comment").setup()
 		end
+		end,
+		dev = false
 	}
 }
 

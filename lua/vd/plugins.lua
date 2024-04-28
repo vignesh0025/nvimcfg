@@ -604,7 +604,6 @@ local plugins = {
 		"vignesh0025/nvim-todo-toggle-comment",
 		config = function ()
 			require("nvim-todo-toggle-comment").setup()
-		end
 		end,
 		dev = false
 	}

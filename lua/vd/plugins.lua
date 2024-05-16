@@ -347,9 +347,11 @@ local plugins = {
 
 	{
 		'akinsho/bufferline.nvim',
+		tag = "v4.5.2", -- this N-1 version seems to be running fine
 		event = "VeryLazy",
 		version = "*",
 		dependencies = 'kyazdani42/nvim-web-devicons',
+		--[[
 		opts = {
 			-- Options are passed as require('bufferline').setup(opts)
 			options = {
@@ -358,6 +360,7 @@ local plugins = {
 				diagnostics = "nvim_lsp"
 			}
 		}
+		]]
 	},
 
 	{

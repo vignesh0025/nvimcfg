@@ -1,12 +1,11 @@
 local vconfig = require("config_enable")
 
 local opts = { noremap = true, silent = true }
-vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, vim.tbl_deep_extend("force", opts, {desc = "VimDiagnostic: Open"}))
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, vim.tbl_deep_extend("force", opts, {desc = "VimDiagnostic: Next"}))
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, vim.tbl_deep_extend("force", opts, {desc = "VimDiagnostic: Prex"}))
 vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, vim.tbl_deep_extend("force", opts, {desc = "VimDiagnostic: List"}))
 
 local config_lspconfig = function()
+
+	vim.lsp.inlay_hint.enable();
 	if vconfig.plugin.mason_enabled then
 		require("mason").setup()
 		require("mason-lspconfig").setup()

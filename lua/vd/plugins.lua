@@ -89,7 +89,7 @@ local plugins = {
 		priority = 1000,
 		config = function()
 			vautocmds.colorscheme_autocmds()
-			vim.cmd("colorscheme midnight")
+			-- vim.cmd("colorscheme midnight")
 		end
 	},
 
@@ -118,11 +118,12 @@ local plugins = {
 		lazy = false,
 		priority = 1000,
 		config = function()
-			-- require("tokyonight").setup({
-			-- 	style = "night",
-			-- 	theme = 'tokyonight'
-			-- })
-			-- vim.cmd [[colorscheme tokyonight]]
+			require("tokyonight").setup({
+				style = "night",
+				theme = 'tokyonight'
+			})
+			vim.cmd [[colorscheme tokyonight]]
+			vim.o.background = "light"
 		end
 	},
 
@@ -131,7 +132,7 @@ local plugins = {
 		lazy = false,
 		priority = 1000,
 		config = function ()
-			vim.cmd [[colorscheme everforest]]
+			-- vim.cmd [[colorscheme everforest]]
 		end
 	},
 
@@ -300,7 +301,6 @@ local plugins = {
 
 	{
 		'NeogitOrg/neogit',
-		branch = "nightly",
 		dependencies = 'nvim-lua/plenary.nvim',
 		cmd = 'Neogit',
 		config = function()

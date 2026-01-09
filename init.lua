@@ -1,63 +1,53 @@
-vim.loader.enable()
+require("config.lazy")
+require("config.autocmds").setup()
 
-vim.g.mapleader=" "
-vim.g.maplocalleader=[[\<space>]]
-
---vim.lsp.set_log_level("debug")
-pcall(require, 'paths')
-
-require('globals')
-require('vd')
-
-local ok, mod = pcall(require, 'plenary.reload')
-if not ok then
-	print("Planery Not Available"..mod)
-else
-	mod.reload_module("vd.", true)
-end
-vim.o.number = true
-vim.o.signcolumn = "yes" -- always have signcolumn so text doesn't move right
-vim.o.colorcolumn = "120"
-vim.o.hidden = true
-vim.o.showbreak = "↪"
-vim.o.smartindent = true
-vim.o.list = true
-vim.o.shiftround = true
-vim.o.scrolloff = 3
+vim.opt.number = true
+vim.opt.signcolumn = "yes" -- always have signcolumn so text doesn't move right
+vim.opt.colorcolumn = "120"
+vim.opt.hidden = true
+vim.opt.showbreak = "↪"
+vim.opt.smartindent = true
+vim.opt.shiftround = true
+vim.opt.scrolloff = 3
 vim.opt.splitkeep = "screen"
 
--- title
 vim.opt.title = true
 
 -- Tab options
-vim.o.tabstop = 4
-vim.o.shiftwidth = 4
-vim.o.softtabstop = 4
--- set expandtab
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+-- set expandtab -- Use spaces when Tab is inserted
 -- :retab changes tab to space if expandtab is set or vice versa
 
 -- Search
-vim.o.ignorecase = true
-vim.o.smartcase = true
-vim.opt.grepprg = 'rg --vimgrep'
-vim.opt.grepformat = "%f:%l:%c:%m"
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
-vim.opt.joinspaces = false
+-- TODO: Depreciate this as not required anymore
+-- vim.opt.grepprg
+-- vim.opt.grepfmt
+-- vim.opt.joinspaces = false -- Default is false
 
--- filetype plugin indent on
-vim.opt.isfname:append({'{', '}'})
-vim.opt.isfname:remove({'='})
-vim.opt.listchars:append({trail="~", tab = " ", extends = "»", precedes = "«", nbsp = "␣"})
+-- Go to File under curser(gf) mapping
+vim.opt.isfname:remove({ '=' })
+
+vim.opt.list = true -- Show non printable chars like trailing spaces and tabs
+vim.opt.listchars:append({ trail = "~", extends = "»", precedes = "«", nbsp = "␣" })
+
+-- Don't create swapfile
 vim.opt.swapfile = false
 
-vim.keymap.set("x",'/','<Esc>/\\%V')
+-- Search within selected blocks in visual mode
+vim.keymap.set("x", '/', '<Esc>/\\%V')
 vim.keymap.set("x", "<leader>p", "\"_dP")
+
+-- Escape to normal mode with jk insert mode
 vim.keymap.set('i', "jk", "<esc>")
 
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " } for type, icon in pairs(signs) do local hl = "DiagnosticSign" .. type vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" }) end
-
-if vim.loop.os_uname().sysname == "Darwin" then
-	vim.o.guifont = "FiraCode Nerd Font:h17"
-else
-	vim.o.guifont = "Hack Nerd Font:h11"
+if vim.g.neovide then
+	vim.o.guifont = "FiraCode Nerd Font:h20"
 end
+
+-- nohup nvim --listen /tmp/nvim.pipe --headless > /dev/null 2>&1 0< /dev/null &!
+
